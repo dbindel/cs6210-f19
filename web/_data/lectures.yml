@@ -1,0 +1,197 @@
+# MWF 11:15-12:05
+#
+# ==================
+# Week 1
+#
+-
+  date: 2019-08-30
+  info: Introduction and matrix multiply
+#
+# ==================
+# Week 2
+#
+-
+  date: 2016-09-02
+  break: Labor Day
+-
+  date: 2019-09-04
+  info: Structured matrix multiply
+-
+  date: 2019-09-06
+  info: Some linear algebra review
+#
+# ==================
+# Week 3
+#
+-
+  date: 2019-09-09
+  info: Matrix calculus
+-
+  date: 2019-09-11
+  info: Sensitivity and conditioning
+-
+  date: 2019-09-13
+  info: Floating point and error analysis basics
+#
+# ==================
+# Week 4
+#
+-
+  date: 2019-09-16
+  info: Building blocks for error analysis
+-
+  date: 2019-09-18
+  info: Introduction to Gaussian elimination
+-
+  date: 2019-09-20
+  info: Schur complements, blocking, and pivoting
+#
+# ==================
+# Week 5
+#
+-
+  date: 2016-09-23
+  info: Backward error, iterative refinement
+-
+  date: 2019-09-25
+  info: Condition estimation, scaling, symmetric matrices
+-
+  date: 2016-09-27
+  info: Structured linear systems
+#
+# ==================
+# Week 6
+#
+-
+  date: 2019-09-30
+  info: Matrices and graphs; nested dissection
+-
+  date: 2019-10-02
+  info: Introduction to least squares
+-
+  date: 2019-10-04
+  info: Sensitivity of least squares
+#
+# ==================
+# Week 7
+#
+-
+  date: 2019-10-07
+  info: Householder, Givens, and QR
+-
+  date: 2010-10-09
+  info: Constrained, weighted, and sparse problems
+-
+  date: 2019-10-11
+  info: Rank-deficiency and regularization
+#
+# ==================
+# Week 8
+#
+-
+  date: 2019-10-14
+  break: Indigenous People's Day
+-
+  date: 2019-10-16
+  info: Regularization choices; matrix nearness problems
+-
+  date: 2019-10-18
+  info: Introduction to eigenvalue problems
+#
+# ==================
+# Week 9
+#
+-
+  date: 2019-10-21
+  info: Perturbation theory
+-
+  date: 2019-10-23
+  info: Power iterations
+-
+  date: 2019-10-25
+  info: Subspace iterations and QR
+#
+# ==================
+# Week 10
+#
+-
+  date: 2019-10-28
+  info: Hessenberg QR
+-
+  date: 2019-10-30
+  info: Practical QR
+-
+  date: 2019-11-01
+  info: Theory for symmetric eigenproblems and SVD
+#
+# ==================
+# Week 11
+#
+-
+  date: 2019-11-04
+  info: Theory for symmetric eigenproblems and SVD
+-
+  date: 2019-11-06
+  info: Solver ideas for SEP and SVD
+-
+  date: 2019-11-08
+  info: Other eigenvalue problems
+#
+# ==================
+# Week 12
+#
+-
+  date: 2019-11-11
+  break: Veterans Day
+-
+  date: 2019-11-13
+  info: Model problems for iterative methods
+-
+  date: 2019-11-15
+  info: Splittings, sweeps, and stationary iterations
+#
+# ==================
+# Week 13
+#
+-
+  date: 2019-11-18
+  info: Approximation from subspaces
+-
+  date: 2019-11-20
+  info: Krylov subspaces
+-
+  date: 2019-11-22
+  info: Lanczos, Arnoldi, and connections
+#
+# ==================
+# Week 13
+#
+-
+  date: 2019-11-25
+  info: Lanczos, Arnoldi, and connections
+-
+  date: 2019-11-27
+  break: Thanksgiving break
+-
+  date: 2019-11-29
+  break: Thanksgiving break
+#
+# ==================
+# Week 14
+#
+-
+  date: 2019-12-02
+  info: Conjugate gradients
+-
+  date: 2019-12-04
+  info: Other Krylov subspace methods
+-
+  date: 2016-12-06
+  info: Krylov subspace methods for eigenproblems
+#
+# ==================
+# Week 15
+#
+-
+  date: 2019-12-09
+  info: Review

@@ -1,0 +1,57 @@
+---
+title: Schedule
+layout: main
+---
+
+<p>
+  This schedule should be considered tentative and subject to change,
+  at least until it actually takes place!
+</p>
+
+<p>
+  In addition to the course notes, I have posted some
+  <a href="lec/background.pdf">background notes</a>.  Some material
+  in these notes is truly background that you will have seen in
+  prior classes.  Other material may be new to you, and some of it
+  will be covered in class.  You should feel free to ask questions
+  about any of this!
+</p>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <colgroup>
+      <col class="col-xs-1">      
+      <col class="col-xs-1">
+      <col class="col-xs-2">      
+      <col class="col-xs-5">
+      <col class="col-xs-3">      
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Week</th>
+        <th>Day</th>
+        <th>Date</th>        
+        <th>Notes and readings</th>
+        <th>HW</th>
+      </tr>
+    </thead>
+    {% for lec in site.data.lectures %}
+    <tr{% if lec.break %} class="info"{% endif %}{% if lec.travel %} class="warning"{% endif %}>
+      {% assign day = lec.date | date: "%a" %}
+      <th>{% if day == "Tue" %}{{ lec.date | date: "%U" | plus: -19 }}{% endif %}</th>
+      <td>{{ day }},</td>
+      <td>{{ lec.date | date: "%b %d" }}</td>      
+      {% if lec.break %}
+      <td>{{ lec.break }}</td>
+      {% else %}
+      <td>{% if lec.info %}{% if lec.notes %}<a href="lec/{{ lec.notes }}">{{ lec.info }}</a>{% else %}{{ lec.info }}{% endif %}{% endif %}</td>
+      {% endif %}
+      <td>
+        {% if lec.hw %}<ul>
+          {% for item in lec.hw %}<li>{% if item.file %}<a href="hw/{{ item.file }}">{{ item.info }}</a>{% else %}{{ item.info }}{% endif %}</li>{% endfor %}
+        </ul>{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>

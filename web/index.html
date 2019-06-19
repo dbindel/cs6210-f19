@@ -1,0 +1,38 @@
+---
+title: Home
+layout: top
+---
+
+{% include head.html %}
+
+<div class="row">
+  
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <h2>News</h2>
+    {% assign counter = 0 %}
+    {% for entry in site.data.news reversed %}
+    {%   if counter < 5 %}
+    {%     include news_entry.html %}
+    {%   endif %}
+    {%   assign counter = counter | plus: 1 %}                  
+    {% endfor %}
+    <a class="btn" href="news.html">Older news &raquo;</a>
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <h2>Overview</h2>
+    <p>
+      CS 6210 is a graduate-level introduction to numerical linear
+      algebra, including a discussion of direct and iterative methods
+      for solving linear systems, least squares problems, and
+      eigenvalue problems.
+    </p>      
+    <p>
+      See <a href="syllabus.html">the syllabus</a> for more
+      information on course logistics.
+    </p>
+
+  </div>
+  </div>
+  
+</div>

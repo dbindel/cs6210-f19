@@ -1,0 +1,12 @@
+title: David Bindel
+email: bindel@cornell.edu
+description: Matrix Computation
+baseurl: "/courses/CS6210/2019fa/"
+url: "http://www.cs.cornell.edu/"
+
+encoding: utf-8
+timezone: America/New_York
+
+exclude: ["Rakefile"]
+
+markdown: kramdown
