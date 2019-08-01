@@ -11,7 +11,7 @@
 # Week 2
 #
 -
-  date: 2016-09-02
+  date: 2019-09-02
   break: Labor Day
 -
   date: 2019-09-04
@@ -50,13 +50,13 @@
 # Week 5
 #
 -
-  date: 2016-09-23
+  date: 2019-09-23
   info: Backward error, iterative refinement
 -
   date: 2019-09-25
   info: Condition estimation, scaling, symmetric matrices
 -
-  date: 2016-09-27
+  date: 2019-09-27
   info: Structured linear systems
 #
 # ==================
@@ -79,7 +79,7 @@
   date: 2019-10-07
   info: Householder, Givens, and QR
 -
-  date: 2010-10-09
+  date: 2019-10-09
   info: Constrained, weighted, and sparse problems
 -
   date: 2019-10-11
@@ -186,7 +186,7 @@
   date: 2019-12-04
   info: Other Krylov subspace methods
 -
-  date: 2016-12-06
+  date: 2019-12-06
   info: Krylov subspace methods for eigenproblems
 #
 # ==================
