@@ -7,7 +7,7 @@ layout:     main
 
 CS 6210, Fall 2019  
 Lecture time: MWF 11:15-12:05  
-Lecture location: TBD
+Lecture location: Hollister 306
 
 ### Staff and office hours
 
@@ -17,11 +17,15 @@ Phone: 607-255-5395
 E-mail: <bindel@cs.cornell.edu>  
 OH: TBD
 
+TA: [John Ryan](https://www.johnpaulryan.com/)  
+E-mail: <jpr269@cornell.edu>  
+OH: TBD
+
 ### Catalog description
 
 4 credits.  Stable and efficient algorithms for linear equations, least
 squares, and eigenvalue problems. Direct and iterative methods are
-considered. The MATLAB system is used extensively.
+considered. Julia and/or MATLAB are used extensively.
 
 ### Prerequisites
 
@@ -54,6 +58,9 @@ Some MATLAB references:
 - Hanselman and Littlefield, [_Mastering MATLAB7_][hanselman]
 - Or pick a favorite from the [many available][mathworks-books]
 
+The [Julia language web site](https://julialang.org/) has good references 
+for the Julia language.
+
 [demmel]: https://www.amazon.com/Applied-Numerical-Linear-Algebra-Demmel/dp/0898713897/
 [gvl]: https://www.amazon.com/Computations-Hopkins-Studies-Mathematical-Sciences/dp/B00BD2DVIC/
 [meyer]: http://www.amazon.com/gp/product/0898714540/qid=1137779618/sr=2-1/ref=pd_bbs_b_2_1/002-5247186-8320001
@@ -82,12 +89,11 @@ material -- and as a way to study for the exams.
 
 ### Homework
 
-There will be twelve one-week homeworks, typically assigned Friday
-and due the following Friday.  These problems will involve a mix
-of proofs and computations done in MATLAB.  Homework should be typed and
-submitted as PDF files on CMS.  After they are graded, homework scores
-will be posted to CMS.  Regrade requests must be submitted within one
-week of receiving the graded homework.
+There will be twelve one-week homeworks, typically assigned Friday and due the
+following Friday.  These problems will involve a mix of proofs and computations
+done in Julia or MATLAB.  Homework should be typed and submitted as PDF files
+on CMS.  After they are graded, homework scores will be posted to CMS.  Regrade
+requests must be submitted within one week of receiving the graded homework.
 
 In order to provide timely, high-quality feedback, we may *not* always
 grade all problems in a homework or pieces to a project.  Instead, we
