@@ -89,8 +89,8 @@ material -- and as a way to study for the exams.
 
 ### Homework
 
-There will be twelve one-week homeworks, typically assigned Friday and due the
-following Friday.  These problems will involve a mix of proofs and computations
+There will be nine one-week homeworks, typically assigned Monday and due the
+following Monday.  These problems will involve a mix of proofs and computations
 done in Julia or MATLAB.  Homework should be typed and submitted as PDF files
 on CMS.  After they are graded, homework scores will be posted to CMS.  Regrade
 requests must be submitted within one week of receiving the graded homework.
@@ -110,10 +110,10 @@ There will be take-home midterm and final exams.
 Your final grade in CS 6210 will be computed from grades on the
 assignments and exams using the following weights:
 
- - Participation: 5%
- - Homework: 10% times 6 homeworks
+ - Participation: 7%
+ - Homework: 7% times 9 homeworks
  - Midterm: 15%
- - Final: 20%
+ - Final: 15%
 
 ## Course policies
 
