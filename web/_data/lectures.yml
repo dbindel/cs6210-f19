@@ -6,7 +6,8 @@
 -
   date: 2019-08-30
   info: Introduction and matrix multiply
-  hw: HW 1 (due 9/9)
+  hw:
+    info: HW 1 (due 9/9)
 #
 # ==================
 # Week 2
@@ -27,7 +28,8 @@
 -
   date: 2019-09-09
   info: Matrix calculus
-  hw: HW 2 (due 9/16)
+  hw:
+    info: HW 2 (due 9/16)
 -
   date: 2019-09-11
   info: Sensitivity and conditioning
@@ -41,7 +43,8 @@
 -
   date: 2019-09-16
   info: Building blocks for error analysis
-  hw: HW 3 (due 9/23)
+  hw:
+    info: HW 3 (due 9/23)
 -
   date: 2019-09-18
   info: Introduction to Gaussian elimination
@@ -55,7 +58,8 @@
 -
   date: 2019-09-23
   info: Backward error, iterative refinement
-  hw: HW 3 (due 9/30)
+  hw:
+    info: HW 3 (due 9/30)
 -
   date: 2019-09-25
   info: Condition estimation, scaling, symmetric matrices
@@ -70,7 +74,8 @@
 -
   date: 2019-09-30
   info: Matrices and graphs; nested dissection
-  hw: HW 4 (due 10/7)
+  hw:
+    info: HW 4 (due 10/7)
 -
   date: 2019-10-02
   info: Introduction to least squares
@@ -84,7 +89,8 @@
 -
   date: 2019-10-07
   info: Householder, Givens, and QR
-  hw: Midterm (due 10/21)
+  hw:
+    info: Midterm (due 10/21)
 -
   date: 2019-10-09
   info: Constrained, weighted, and sparse problems
@@ -111,7 +117,8 @@
 -
   date: 2019-10-21
   info: Perturbation theory
-  hw: HW 5 (due 10/28)
+  hw:
+    info: HW 5 (due 10/28)
 -
   date: 2019-10-23
   info: Power iterations
@@ -126,7 +133,8 @@
 -
   date: 2019-10-28
   info: Hessenberg QR
-  hw: HW 6 (due 11/04)
+  hw:
+    info: HW 6 (due 11/04)
 -
   date: 2019-10-30
   info: Practical QR
@@ -140,7 +148,8 @@
 -
   date: 2019-11-04
   info: Theory for symmetric eigenproblems and SVD
-  hw: HW 7 (due 11/18)
+  hw:
+    info: HW 7 (due 11/18)
 -
   date: 2019-11-06
   info: Solver ideas for SEP and SVD
@@ -167,7 +176,8 @@
 -
   date: 2019-11-18
   info: Approximation from subspaces
-  hw: HW 8 (due 11/25)
+  hw:
+    info: HW 8 (due 11/25)
 -
   date: 2019-11-20
   info: Krylov subspaces
@@ -194,7 +204,8 @@
 -
   date: 2019-12-02
   info: Conjugate gradients
-  hw: HW 9 (due 12/9)
+  hw:
+    info: HW 9 (due 12/9)
 -
   date: 2019-12-04
   info: Other Krylov subspace methods
