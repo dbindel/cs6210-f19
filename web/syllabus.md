@@ -19,7 +19,7 @@ OH: TBD
 
 TA: [John Ryan](https://www.johnpaulryan.com/)  
 E-mail: <jpr269@cornell.edu>  
-OH: TBD
+OH: Tues 1-2, Weds 4-5 in Rhodes 584
 
 ### Catalog description
 
