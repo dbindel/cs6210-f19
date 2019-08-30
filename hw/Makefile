@@ -18,5 +18,5 @@ distclean: clean
 	rm -f pdf/*.pdf
 
 copy: $(HW)
-	#mkdir -p ../web/hw
-	#cp $(HW) ../web/hw
+	mkdir -p ../web/hw
+	cp $(HW) ../web/hw
