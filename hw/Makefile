@@ -1,6 +1,6 @@
 TEXINPUTS:=.
 
-HW= 
+HW=pdf/hw1.pdf 
 
 .PHONY: all copy
 all: $(HW)

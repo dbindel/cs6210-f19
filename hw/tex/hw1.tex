@@ -1,0 +1,52 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{HW 1}{2019-09-09}
+
+You may (and should) talk about problems with each other and with me,
+providing attribution for any good ideas you might get.  Your final
+write-up should be your own.
+
+\paragraph*{1: About you}
+Tell me a few things about yourself:
+\begin{itemize}
+\item How do you prefer to be called?
+\item Why are you taking the class?
+\item Are there things you particularly hope to see?
+\item Do you have any concerns (about background, schedule, etc)?
+\end{itemize}
+
+\paragraph*{2: A problem of performance}
+Julia and \matlab\ support both sparse and dense matrix data structures,
+and they have different performance characteristics.  For a variety
+of square matrices of size $n$ and sparsity level $s$ (where $s$ is
+the fraction of entries that are nonzero), compare the speed of dense
+and sparse matrix-vector multiply.  You may use {\tt As = sparse(A)}
+to make a sparse version of a dense matrix $A$.  What do you observe
+about the relative performance of these options?
+
+{\em Note:} If you want examples of how to write timing tests, Julia
+scripts will be added to the \matlab\ scripts already in the class
+repository.
+
+\paragraph*{3: Seeking structure}
+Rewrite the following code fragment to run in $O(n)$ time
+(currently in \matlab\, check later for Julia versions).
+\begin{lstlisting}
+  % u, v, and x are length n
+  A = eye(n) + u*v';
+  
+  y  = A*x;
+  z  = A'*x;
+  d  = diag(A);
+  df = diag(flipud(A));
+  t  = trace(A);
+  c  = det(A);
+\end{lstlisting}
+
+{\em Hint (last line):} For any $X, Y \in \bbR^{n \times k}$:
+$\det(I+XY^T) = \det(I+Y^T X)$.
+
+\end{document}
