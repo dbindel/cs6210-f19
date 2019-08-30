@@ -117,6 +117,19 @@ assignments and exams using the following weights:
 
 ## Course policies
 
+### Information systems
+
+The course web page is the canonical source of information for the class.
+The web page is maintained via a
+[Github repository](https://www.github.com/dbindel/cs6210-f19/).
+Pull requests with enhancements or corrections are welcome
+(and these count toward participation).
+
+We will use [CMS](http://cmsx.cs.cornell.edu) for homework submission and
+recording grades.  I have also created a class
+[Piazza](http://piazza.com/cornell/fall2019/cs6210)
+for discussion; please feel free to add yourself to it.
+
 ### Late work policy
 
 Unless otherwise stated, all work is due by 11:59 pm on the due date.
