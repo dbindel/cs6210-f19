@@ -110,10 +110,10 @@ There will be take-home midterm and final exams.
 Your final grade in CS 6210 will be computed from grades on the
 assignments and exams using the following weights:
 
- - Participation: 7%
- - Homework: 7% times 9 homeworks
- - Midterm: 15%
- - Final: 15%
+ - Participation: 6%
+ - Homework: 6% times 9 homeworks
+ - Midterm: 20%
+ - Final: 20%
 
 ## Course policies
 
