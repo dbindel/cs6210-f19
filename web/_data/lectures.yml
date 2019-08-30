@@ -6,9 +6,10 @@
 -
   date: 2019-08-30
   info: Introduction and matrix multiply
-  notes: 2019-09-30.pdf
+  notes: 2019-08-30.pdf
   hw:
     - info: HW 1 (due 9/9)
+      file: hw/hw1.pdf
 #
 # ==================
 # Week 2
