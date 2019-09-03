@@ -19,7 +19,7 @@ OH: Weds 1:30-2:30, Fri 10-11 in Gates 425, or [by appointment](http://www.meetm
 
 TA: [John Ryan](https://www.johnpaulryan.com/)  
 E-mail: <jpr269@cornell.edu>  
-OH: Tues 1-2, Weds 4-5 in Rhodes 584
+OH: Tues 1:30-2:30, Weds 2:30-3:30 in Rhodes 503
 
 ### Catalog description
 
