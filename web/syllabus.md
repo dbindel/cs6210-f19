@@ -15,7 +15,7 @@ Prof: [David Bindel](http://www.cs.cornell.edu/~bindel)
 425 Gates Hall  
 Phone: 607-255-5395  
 E-mail: <bindel@cs.cornell.edu>  
-OH: TBD
+OH: Weds 1:30-2:30, Fri 10-11 in Gates 425, or [by appointment](http://www.meetme.so/DavidBindel)
 
 TA: [John Ryan](https://www.johnpaulryan.com/)  
 E-mail: <jpr269@cornell.edu>  
