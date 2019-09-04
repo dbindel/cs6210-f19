@@ -2,12 +2,19 @@ TEXINPUTS:=.
 
 LEC= \
 	pdf/background.pdf \
-	pdf/2019-08-30.pdf
+	pdf/2019-08-30.pdf \
+	pdf/2019-09-04.pdf 
 
 .PHONY: all copy
 all: $(LEC)
 
 pdf/%.pdf: notes/%.tex
+	xelatex -output-dir pdf $<
+	xelatex -output-dir pdf $<
+
+pdf/2019-09-04.pdf: notes/2019-09-04.tex
+	xelatex -output-dir pdf $<
+	bibtex pdf/2019-09-04
 	xelatex -output-dir pdf $<
 	xelatex -output-dir pdf $<
 
