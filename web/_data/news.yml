@@ -1,4 +1,7 @@
 -
+  date: 2019-09-05
+  text: "The hw/code subdirectory on Github now has reference code for HW 1 problem 3 (MATLAB and Julia)"
+-
   date: 2019-09-04
   text: "For HW1, the matvec_time script is now in lec/code on Github; for problem 3, the A matrix should not be treated as an output."
 -
