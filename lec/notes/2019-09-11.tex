@@ -1,0 +1,219 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-09-11}
+
+\section{Notions of error}
+
+The art of numerics is finding an approximation with a fast algorithm,
+a form that is easy to analyze, and an error bound.  Given a task, we
+want to engineer an approximation that is good enough, and that
+composes well with other approximations.  To make these goals precise,
+we need to define types of errors and error propagation, and some
+associated notation -- which is the point of this lecture.
+
+\subsection{Absolute and relative error}
+
+Suppose $\hat{x}$ is an approximation to $x$.
+The {\em absolute error} is
+\[
+  e_{\mathrm{abs}} = |\hat{x}-x|.
+\]
+Absolute error has the same dimensions as $x$,
+and can be misleading without some context.  An error
+of one meter per second is dramatic if $x$ is my walking
+pace; if $x$ is the speed of light, it is a very small error.
+
+The {\em relative error} is a measure with a more natural
+sense of scale:
+\[
+  e_{\mathrm{rel}} = \frac{|\hat{x}-x|}{|x|}.
+\]
+Relative error is familiar in everyday life: when someone
+talks about an error of a few percent, or says that a given
+measurement is good to three significant figures, she is describing
+a relative error.
+
+We sometimes estimate the relative error in approximating
+$x$ by $\hat{x}$ using the relative error in approximating
+$\hat{x}$ by $x$:
+\[
+  \hat{e}_{\mathrm{rel}} = \frac{|\hat{x}-x|}{|\hat{x}|}.
+\]
+As long as $\hat{e}_{\mathrm{rel}} < 1$, a little algebra gives that
+\[
+  \frac{\hat{e}_{\mathrm{rel}}}{1+\hat{e}_{\mathrm{rel}}} \leq
+  e_{\mathrm{rel}} \leq
+  \frac{\hat{e}_{\mathrm{rel}}}{1-\hat{e}_{\mathrm{rel}}}.
+\]
+If we know $\hat{e}_{\mathrm{rel}}$ is much less than one, then it
+is a good estimate for $e_{\mathrm{rel}}$.  If
+$\hat{e}_{\mathrm{rel}}$ is not much less than one,
+we know that $\hat{x}$ is a poor approximation to $x$.
+Either way, $\hat{e}_{\mathrm{rel}}$ is often just as useful
+as $e_{\mathrm{rel}}$, and may be easier to estimate.
+
+Relative error makes no sense for $x = 0$, and may be too pessimistic
+when the property of $x$ we care about is ``small enough.''  A natural
+intermediate between absolute and relative errors is the mixed error
+\[
+  e_{\mathrm{mixed}} = \frac{|\hat{x}-x|}{|x| + \tau}
+\]
+where $\tau$ is some natural scale factor associated with $x$.
+
+\subsection{Errors beyond scalars}
+
+Absolute and relative error make sense for vectors as well as scalars.
+If $\| \cdot \|$ is a vector
+norm and $\hat{x}$ and $x$ are vectors, then the (normwise) absolute
+and relative errors are
+\begin{align*}
+  e_{\mathrm{abs}} &= \|\hat{x}-x\|, &
+  e_{\mathrm{rel}} &= \frac{\|\hat{x}-x\|}{\|x\|}.
+\end{align*}
+We might also consider the componentwise absolute or relative errors
+\begin{align*}
+  e_{\mathrm{abs},i} &= |\hat{x}_i-x_i| &
+  e_{\mathrm{rel},i} &= \frac{|\hat{x}_i-x_i|}{|x_i|}.
+\end{align*}
+The two concepts are related: the maximum componentwise relative error
+can be computed as a normwise error in a norm defined in terms of the
+solution vector:
+\begin{align*}
+  \max_i e_{\mathrm{rel},i} &= \vertiii{\hat{x}-x}
+\end{align*}
+where $\vertiii{z} = \|\ddiag(x)^{-1} z\|$.
+More generally, absolute error makes sense whenever we can measure
+distances between the truth and the approximation; and relative error
+makes sense whenever we can additionally measure the size of the
+truth.  However, there are often many possible notions of distance
+and size; and different ways to measure give different notions of
+absolute and relative error.  In practice, this deserves some care.
+
+\subsection{Dimensions and scaling}
+
+The first step in analyzing many application problems is
+{\em nondimensionalization}: combining constants in the
+problem to obtain a small number of dimensionless constants.
+Examples include the aspect ratio of a rectangle,
+the Reynolds number in fluid mechanics\footnote{%
+Or any of a dozen other named numbers in fluid mechanics.  Fluid
+mechanics is a field that appreciates the power of dimensional
+analysis}, and so forth.  There are three big reasons to
+nondimensionalize:
+\begin{itemize}
+\item
+  Typically, the physics of a problem only really depends on
+  dimensionless constants, of which there may be fewer than
+  the number of dimensional constants.  This is important
+  for parameter studies, for example.
+\item
+  For multi-dimensional problems in which the unknowns have different
+  units, it is hard to judge an approximation error as ``small'' or
+  ``large,'' even with a (normwise) relative error estimate.  But one
+  can usually tell what is large or small in a non-dimensionalized
+  problem.
+\item
+  Many physical problems have dimensionless parameters much less than
+  one or much greater than one, and we can approximate the physics in
+  these limits.  Often when dimensionless constants are huge or tiny
+  and asymptotic approximations work well, naive numerical methods
+  work work poorly.  Hence, nondimensionalization helps us choose how
+  to analyze our problems --- and a purely numerical approach may be
+  silly.
+\end{itemize}
+
+\section{Forward and backward error}
+
+We often approximate a function $f$ by another function $\hat{f}$.
+For a particular $x$, the {\em forward} (absolute) error is
+\[
+  |\hat{f}(x)-f(x)|.
+\]
+In words, forward error is the function {\em output}.  Sometimes,
+though, we can think of a slightly wrong {\em input}:
+\[
+  \hat{f}(x) = f(\hat{x}).
+\]
+In this case, $|x-\hat{x}|$ is called the {\em backward} error.
+An algorithm that always has small backward error is {\em backward stable}.
+
+A {\em condition number} a tight constant relating relative output
+error to relative input error.  For example, for the problem of
+evaluating a sufficiently nice function $f(x)$ where $x$ is the input
+and $\hat{x} = x+h$ is a perturbed input (relative error $|h|/|x|$),
+the condition number $\kappa[f(x)]$ is the smallest constant such that
+\[
+  \frac{|f(x+h)-f(x)|}{|f(x)|} \leq \kappa[f(x)] \frac{|h|}{|x|} + o(|h|)
+\]
+If $f$ is differentiable, the condition number is
+\[
+\kappa[f(x)] =
+  \lim_{h \neq 0} \frac{|f(x+h)-f(x)|/|f(x)|}{|(x+h)-x|/|x|} =
+  \frac{|f'(x)||x|}{|f(x)|}.
+\]
+If $f$ is Lipschitz in a neighborhood of $x$ (locally Lipschitz), then
+\[
+\kappa[f(x)] =
+  \frac{M_{f(x)}|x|}{|f(x)|}.
+\]
+where $M_f$ is the smallest constant such that
+$|f(x+h)-f(x)| \leq M_f |h| + o(|h|)$.  When the problem has no linear
+bound on the output error relative to the input error, we sat the
+problem has an {\em infinite} condition number.  An example is
+$x^{1/3}$ at $x = 0$.
+
+A problem with a small condition number is called {\em well-conditioned};
+a problem with a large condition number is {\em ill-conditioned}.
+A backward stable algorithm applied to a well-conditioned problem has
+a small forward error.
+
+\section{Forward and backward error}
+
+We often approximate a function $f$ by another function $\hat{f}$.
+For a particular $x$, the {\em forward} (absolute) error is
+\[
+  |\hat{f}(x)-f(x)|.
+\]
+In words, forward error is the function {\em output}.  Sometimes,
+though, we can think of a slightly wrong {\em input}:
+\[
+  \hat{f}(x) = f(\hat{x}).
+\]
+In this case, $|x-\hat{x}|$ is called the {\em backward} error.
+An algorithm that always has small backward error is {\em backward stable}.
+
+A {\em condition number} a tight constant relating relative output
+error to relative input error.  For example, for the problem of
+evaluating a sufficiently nice function $f(x)$ where $x$ is the input
+and $\hat{x} = x+h$ is a perturbed input (relative error $|h|/|x|$),
+the condition number $\kappa[f(x)]$ is the smallest constant such that
+\[
+  \frac{|f(x+h)-f(x)|}{|f(x)|} \leq \kappa[f(x)] \frac{|h|}{|x|} + o(|h|)
+\]
+If $f$ is differentiable, the condition number is
+\[
+\kappa[f(x)] =
+  \lim_{h \neq 0} \frac{|f(x+h)-f(x)|/|f(x)|}{|(x+h)-x|/|x|} =
+  \frac{|f'(x)||x|}{|f(x)|}.
+\]
+If $f$ is Lipschitz in a neighborhood of $x$ (locally Lipschitz), then
+\[
+\kappa[f(x)] =
+  \frac{M_{f(x)}|x|}{|f(x)|}.
+\]
+where $M_f$ is the smallest constant such that
+$|f(x+h)-f(x)| \leq M_f |h| + o(|h|)$.  When the problem has no linear
+bound on the output error relative to the input error, we sat the
+problem has an {\em infinite} condition number.  An example is
+$x^{1/3}$ at $x = 0$.
+
+A problem with a small condition number is called {\em well-conditioned};
+a problem with a large condition number is {\em ill-conditioned}.
+A backward stable algorithm applied to a well-conditioned problem has
+a small forward error.
+
+
+\end{document}

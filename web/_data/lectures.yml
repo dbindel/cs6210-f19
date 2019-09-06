@@ -32,14 +32,17 @@
 -
   date: 2019-09-09
   info: Matrix calculus
+  notes: 2019-09-09.pdf
   hw:
     - info: HW 2 (due 9/16)
 -
   date: 2019-09-11
   info: Sensitivity and conditioning
+  notes: 2019-09-11.pdf
 -
   date: 2019-09-13
   info: Floating point and error analysis basics
+  notes: 2019-09-13.pdf
 #
 # ==================
 # Week 4
