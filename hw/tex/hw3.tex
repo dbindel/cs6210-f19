@@ -1,0 +1,46 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-09-16}{2019-09-23}
+
+You may (and should) talk about problems with each other and with me,
+providing attribution for any good ideas you might get.  Your final
+write-up should be your own.
+
+\paragraph*{1: Gauss transformations}
+Let $G = I-\tau e_k^T$ be a Gauss transformation matrix (so the only
+nonzeros in $\tau$ appear after entry $k$).  Then
+\begin{itemize}
+\item Show that $G^{-1} = I+\tau e_k^T$.
+\item Argue that $\|G\|_\infty = 1 + \|\tau\|_\infty$ and
+  $\|G\|_1 = 1 + \|\tau\|_1$.
+\item The singular values of $G$ are all one, except for two of them
+  that are the positive roots of the equation
+  \[
+    p(\sigma^2) = 1 - (2+\|\tau_k\|^2) \sigma^2 + \sigma^4 = 0.
+  \]
+  Using this fact (which you are not required to prove), write a code
+  $\kappa_2(G) = \|G\|_2 \|G^{-1}\|^2 = \sigma_1(G) / \sigma_n(G)$.
+  Your code should give remain accurate (to within a few ulps) when
+  $\|\tau\|$ is very large or small (including $\tau = 0$).
+\end{itemize}
+Bonus: Prove the fact about the singular values used in the second part.
+
+\paragraph*{2: Follow the arrow}
+Consider the {\em arrow matrix}
+\[
+  A = \begin{bmatrix} D & b \\ c^T & f \end{bmatrix}
+\]
+where $D$ is diagonal.
+\begin{itemize}
+\item Show that $A$ is invertible if the diagonal entries $d_i$ are
+  all nonzero and $f-\sum_i b_i c_i / d_i \neq 0$.
+\item Write an $O(n)$ time routine to compute $\det(A)$
+\item Write an $O(n)$ time routine to solve the system $Ax = y$.
+\end{itemize}
+Your codes should follow either the \matlab\ or the Julia template in
+the class repository.
+
+\end{document}
