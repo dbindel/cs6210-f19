@@ -51,14 +51,17 @@
 -
   date: 2019-09-16
   info: Building blocks for error analysis
+  notes: 2019-09-16.pdf
   hw:
     - info: HW 3 (due 9/23)
 -
   date: 2019-09-18
   info: Introduction to Gaussian elimination
+  notes: 2019-09-18.pdf
 -
   date: 2019-09-20
   info: Schur complements, blocking, and pivoting
+  notes: 2019-09-20.pdf
 #
 # ==================
 # Week 5
