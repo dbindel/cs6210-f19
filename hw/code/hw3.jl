@@ -87,7 +87,7 @@ function hw3p2_test()
   d = rand(n);
   b = rand(n);
   c = rand(n);
-  f = rand(1);
+  f = rand();
   y = rand(n+1);
   detA_ref, x_ref = hw3p2_ref(d, b, c, f, y);
   detA, x = hw3p2(d, b, c, f, y);
