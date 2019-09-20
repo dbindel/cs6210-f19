@@ -37,7 +37,7 @@ How much work is there in total?  In eliminating column $j$, we do
 $(n-j)^2$ multiplies and the same number of subtractions; so in all,
 the number of multiplies (and adds) is
 \[
-  \sum_{j=1}^{n-1} (n-j)^2 = \sum_{k=1}^{n-1} k^2 = \frac{1}{6} n^3 + O(n^2)
+  \sum_{j=1}^{n-1} (n-j)^2 = \sum_{k=1}^{n-1} k^2 = \frac{1}{3} n^3 + O(n^2)
 \]
 We also perform $O(n^2)$ divisions.  Thus, Gaussian elimination, like
 matrix multiplication, is an $O(n^3)$ algorithm operating on $O(n^2)$ data.
