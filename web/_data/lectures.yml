@@ -70,14 +70,17 @@
 -
   date: 2019-09-23
   info: Backward error, iterative refinement
+  notes: 2019-09-23.pdf
   hw:
     - info: HW 3 (due 9/30)
 -
   date: 2019-09-25
   info: Condition estimation, scaling, symmetric matrices
+  notes: 2019-09-25.pdf
 -
   date: 2019-09-27
   info: Structured linear systems
+  notes: 2019-09-27.pdf
   travel: Weill Cornell Cloud Research Workshop
 #
 # ==================
