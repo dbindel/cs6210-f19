@@ -33,8 +33,14 @@ version of Gaussian elimination with complete pivoting.  Explain why
 this is a reasonable description, and implement the strategy yourself
 (you may restrict your attention to a finite mesh in $x$ and $y$, if
 you wish).  Illustrate the convergence of the maximum error over
-$[-1,1]^2$ in the first twenty terms of approximating
-$f(x,y) = \exp(-(x^2+y^2)/2)$.
+$[-1,1]^2$ in the first twenty terms of approximating the squared
+exponential function $f(x,y) = \exp(-(x^2+y^2)/2)$ and the Ackley function
+\[
+  f(x,y) =
+  20
+  -20 \exp\left( -0.2 \sqrt{\frac{x^2+y^2}{2}} \right)
+  -\exp\left( \frac{1}{2} \cos(2\pi x) + \frac{1}{2} \cos(2\pi y) \right).
+\]
 
 \paragraph*{2: Convergence of iterative refinement}
 In the second section of the lecture notes for Sep 23, we gave an
