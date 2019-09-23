@@ -1,0 +1,65 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-09-23}{2019-09-30}
+
+You may (and should) talk about problems with each other and with me,
+providing attribution for any good ideas you might get.  Your final
+write-up should be your own.
+
+% GECP and function approximation
+% Left-looking vs right-looking
+% Bordered system solver (already did this a little)
+% Convergence of iterative refinement "stop making progress at some point"
+
+\paragraph*{1: GECP and function approximation}
+Suppose for a smooth function of two variables on the domain
+$[-1,1]^2$, we seek an approximation as a sum of {\em separable functions}:
+\[
+  f_m(x,y) = \sum_{k=1}^m g_k(x) h_k(y).
+\]
+One approach (due to Townsend and Trefethen) is the following greedy
+strategy: given $f_m(x,y)$ with $f_0 \equiv 0$, compute $f_{m+1}$ as
+\begin{align*}
+  e_{m}(x,y) &= f(x,y) - f_m(x,y) \\
+  x_m^*, y_m^* &= \operatorname{argmax}_{x,y} |e_m(x,y)| \\
+  g_{m+1}(x) &= e_m(x, y_m^*) / e_m(x_m^*, y_m^*) \\
+  h_{m+1}(y) &= e_m(x_m^*, y).
+\end{align*}
+Townsend and Trefethen refer to this as an infinite-dimensional
+version of Gaussian elimination with complete pivoting.  Explain why
+this is a reasonable description, and implement the strategy yourself
+(you may restrict your attention to a finite mesh in $x$ and $y$, if
+you wish).  Illustrate the convergence of the maximum error over
+$[-1,1]^2$ in the first twenty terms of approximating
+$f(x,y) = \exp(-(x^2+y^2)/2)$.
+
+\paragraph*{2: Convergence of iterative refinement}
+In the second section of the lecture notes for Sep 23, we gave an
+informal discussion of the convergence of iterative refinement.  In
+this problem, we nail down the analysis a little more.  Consider the
+refinement iteration
+\[
+  x_{k+1} = x_k - \hat{A}_k^{-1} (b - A x_k + g_k) + h_k
+\]
+where $\hat{A}_k = A + E_k$ and $g_k$ and $h_k$ denote the rounding
+errors associated with computing the residual $b-Ax_k$ and doing the
+final subtraction in floating point arithmetic.  Assuming $\|E_k\|
+\leq \eta$, $\|g_k\| \leq \gamma$, and $\|h_k\| \leq \nu$ for all $k$,
+and assuming that $\|A^{-1}\| < \eta^{-1}$, use a geometric series to
+bound the error at step $k$ in terms of the initial error and the
+rounding errors introduced at each step.  Because of the presence of
+$g_k$ and $h_k$, the error will {\em not} converge to zero; what is an
+asymptotic bound on the norm of the error as $k \rightarrow \infty$?
+What does your analysis suggest about the number of steps of iterative
+refinement that one should take?
+
+\paragraph*{3: Condititioning of the complement}
+Suppose $A$ is symmetric and positive definite.  Show that if $S$ is a
+Schur complement that appears during (unpivoted) factorization of $A$, then
+$\kappa_2(S) \leq \kappa_2(A)$.  Show by example that this statement
+may not hold if $A$ is not positive definite.
+
+\end{document}
