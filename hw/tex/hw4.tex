@@ -3,7 +3,7 @@
 
 \begin{document}
 
-\hdr{2019-09-23}{2019-09-30}
+\hdr{2019-09-23}{2019-10-02}
 
 You may (and should) talk about problems with each other and with me,
 providing attribution for any good ideas you might get.  Your final
@@ -41,6 +41,13 @@ exponential function $f(x,y) = \exp(-(x^2+y^2)/2)$ and the Ackley function
   -20 \exp\left( -0.2 \sqrt{\frac{x^2+y^2}{2}} \right)
   -\exp\left( \frac{1}{2} \cos(2\pi x) + \frac{1}{2} \cos(2\pi y) \right).
 \]
+You may use the partial code templates provided
+\href{https://github.com/dbindel/cs6210-f19/tree/master/hw/code/hw4}{in the Github
+  repo}
+(in Julia or \matlab), or you may write your own.  Note that you will
+most likely want some mechanism to allow early termination if the
+error maximum of $|e_m|$ becomes too small (either in an absolute
+sense or relative to the maximum of $|f|$).
 
 \paragraph*{2: Convergence of iterative refinement}
 In the second section of the lecture notes for Sep 23, we gave an
@@ -54,13 +61,28 @@ where $\hat{A}_k = A + E_k$ and $g_k$ and $h_k$ denote the rounding
 errors associated with computing the residual $b-Ax_k$ and doing the
 final subtraction in floating point arithmetic.  Assuming $\|E_k\|
 \leq \eta$, $\|g_k\| \leq \gamma$, and $\|h_k\| \leq \nu$ for all $k$,
-and assuming that $\|A^{-1}\| < \eta^{-1}$, use a geometric series to
+and assuming that $\|A^{-1}\| < \eta^{-1}/2$, use a geometric series to
 bound the error at step $k$ in terms of the initial error and the
 rounding errors introduced at each step.  Because of the presence of
 $g_k$ and $h_k$, the error will {\em not} converge to zero; what is an
 asymptotic bound on the norm of the error as $k \rightarrow \infty$?
 What does your analysis suggest about the number of steps of iterative
 refinement that one should take?
+
+{\em Hint:}  Observe that in general if one has non-negative
+quantities $\beta_k$ satisfying
+\[
+  \beta_{k+1} \leq \rho \beta_k + \delta
+\]
+then by recurrence
+\[
+  \beta_k
+  \leq \rho^k \beta_0 + \frac{1-\rho^k}{1-\rho} \delta,
+\]
+and by a geometric series bound, for $0 \leq \rho < 1$,
+\[
+  \beta_k \leq \rho^k \beta_0 + \frac{\delta}{1-\rho}
+\]
 
 \paragraph*{3: Condititioning of the complement}
 Suppose $A$ is symmetric and positive definite.  Show that if $S$ is a
