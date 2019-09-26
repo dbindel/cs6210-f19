@@ -55,7 +55,7 @@ informal discussion of the convergence of iterative refinement.  In
 this problem, we nail down the analysis a little more.  Consider the
 refinement iteration
 \[
-  x_{k+1} = x_k - \hat{A}_k^{-1} (b - A x_k + g_k) + h_k
+  x_{k+1} = x_k + \hat{A}_k^{-1} (b - A x_k + g_k) + h_k
 \]
 where $\hat{A}_k = A + E_k$ and $g_k$ and $h_k$ denote the rounding
 errors associated with computing the residual $b-Ax_k$ and doing the
