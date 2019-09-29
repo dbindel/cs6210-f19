@@ -97,19 +97,19 @@
   info: Introduction to least squares
 -
   date: 2019-10-04
-  info: Sensitivity of least squares
+  info: Householder, Givens, and QR
 #
 # ==================
 # Week 7
 #
 -
   date: 2019-10-07
-  info: Householder, Givens, and QR
+  info: Constraints, weights, sparsity, projections
   hw:
     - info: Midterm (due 10/21)
 -
   date: 2019-10-09
-  info: Constrained, weighted, and sparse problems
+  info: Sensitivity of least squares
 -
   date: 2019-10-11
   info: Rank-deficiency and regularization
@@ -125,22 +125,22 @@
   info: Regularization choices; matrix nearness problems
 -
   date: 2019-10-18
-  info: Introduction to eigenvalue problems
+  info: Kernels and least squares
 #
 # ==================
 # Week 9
 #
 -
   date: 2019-10-21
-  info: Perturbation theory
+  info: Introduction to eigenvalue problems
   hw:
     - info: HW 6 (due 10/28)
 -
   date: 2019-10-23
-  info: Power iterations
+  info: Perturbation theory
 -
   date: 2019-10-25
-  info: Subspace iterations and QR
+  info: Power iterations
   travel: Visit to Kalamazoo
 #
 # ==================
@@ -148,15 +148,15 @@
 #
 -
   date: 2019-10-28
-  info: Hessenberg QR
+  info: Subspace iterations and QR
   hw:
     - info: HW 7 (due 11/04)
 -
   date: 2019-10-30
-  info: Practical QR
+  info: Hessenberg QR
 -
   date: 2019-11-01
-  info: Theory for symmetric eigenproblems and SVD
+  info: Practical QR
 #
 # ==================
 # Week 11
