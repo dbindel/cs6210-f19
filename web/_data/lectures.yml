@@ -90,14 +90,17 @@
 -
   date: 2019-09-30
   info: Matrices and graphs; nested dissection
+  notes: 2019-09-30.pdf
   hw:
     - info: HW 5 (due 10/7)
 -
   date: 2019-10-02
   info: Introduction to least squares
+  notes: 2019-10-02.pdf
 -
   date: 2019-10-04
   info: Householder, Givens, and QR
+  notes: 2019-10-04.pdf
 #
 # ==================
 # Week 7
