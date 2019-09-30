@@ -1,0 +1,49 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-09-30}{2019-10-07}
+
+You may (and should) talk about problems with each other and with me,
+providing attribution for any good ideas you might get.  Your final
+write-up should be your own.
+
+% Positive definite and Cholesky
+% Diagonally dominant
+% Tridiagonal systems
+% - Low-rank updates and bordered systems
+% Tree-structured systems
+% Sparse solvers
+% Vandermonde matrices
+% Circulant matrices
+% Intro least sq, statistical rationale
+
+\paragraph*{1: Tree falling}
+The code {\tt tree\_solve} in the repository computes the solution to
+$Ax = b$ where $A$ is a tree-structured symmetric positive definite
+matrix.  Rewrite the reference code to run in $O(n)$ time.
+
+\paragraph*{2: Remove a row}
+Suppose $A \in \bbR^{m \times n}$ is decomposed as
+\[
+  A = \begin{bmatrix} A_1 \\ a_2 \end{bmatrix}, \quad
+  A_1 \in \bbR^{(m-1) \times n}, a_2 \in \bbR^{1 \times n}
+\]
+and both $A$ and $A_1$ are rank $n$.
+Suppose we have an economy QR of $A$, show how to compute
+$\hat{x} = A_1^\dagger b_1$ in $O(n^2)$ time (no code is needed
+for this problem, just give the idea).
+
+\paragraph*{3: Pesky probability}
+Supposing $Z$ is a standard normal polynomial, find the degree 8
+polynomial $p(z)$ that minimizes
+\[
+  \phi(p) = E_Z[(p(Z)-cos(Z))^2].
+\]
+What is the optimal value of $\phi$?  Please use the Gauss-Hermite
+quadrature code included in the repository ({\tt gausshq.m} and
+{\tt gausshq.jl}) to compute $E_Z[f(Z)]$ for any $f$ appearing in your
+computations.
+
+\end{document}
