@@ -5,7 +5,7 @@
 % (except where p(i) = 0).  Your solution should run in O(n) time, and
 % should *not* use the sparse solvers in MATLAB or Julia directly --
 % write your own tree factorization!  You may assume that p is in ascending
-% order (i.e. the nodes are ordered from root to leaves).
+% order (i.e. the nodes are ordered from leaves to root).
 %
 function [x] = tree_solve(p, d, w, b)
 
