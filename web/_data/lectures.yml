@@ -108,7 +108,8 @@
 #
 -
   date: 2019-10-07
-  info: Constraints, weights, sparsity, projections
+  info: Constraints, sparsity, projections
+  notes: 2019-10-07.pdf
   hw:
     - info: Midterm (due 10/21)
       file: mt.pdf
