@@ -111,6 +111,7 @@
   info: Constraints, weights, sparsity, projections
   hw:
     - info: Midterm (due 10/21)
+      file: mt.pdf
 -
   date: 2019-10-09
   info: Sensitivity of least squares

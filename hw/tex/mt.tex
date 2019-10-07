@@ -1,0 +1,80 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\pagestyle{fancy}
+\lhead{Bindel, Fall 2019}
+\rhead{Matrix Computation}
+\fancyfoot{}
+\begin{center}
+  {\large{\bf Midterm}} \\ (due: 2019-10-21)
+\end{center}
+
+You may (and should) use any references you wish: books, notes,
+\matlab\ help, literature.  But please do not consult with anyone
+outside the course staff.  Templates for the required codes are
+provided in the class Github repository.
+
+\paragraph*{1: Identity plus}
+Consider the matrix $A = I + ZZ^T$ where $Z \in \bbR^{n \times k}$.
+\begin{itemize}
+\item[2 pts] Argue that $A$ is symmetric and positive definite.
+\item[2 pts] Give an $O(nk)$ time algorithm for computing $y = Ax$.
+\item[2 pts] Given an economy SVD $Z = U \Sigma V^T$, show how to compute
+  $\kappa_2(A)$ cheaply.  How cheaply can it be done?
+\item[2 pts] Given an economy QR decomposition $Z = QR$, show how to solve
+  $Ax = b$ cheaply.  How cheaply can it be done?
+\end{itemize}
+Please provide {\em both} a written description of your approach and
+code that satisfies the provided interfaces.
+
+\paragraph*{2: Daring derivatives}
+Give codes to compute directional derivatives for each of the
+following
+\begin{itemize}
+\item[2 pts] Differentiate $\|x\|_M^2$ with respect to changes in $x$ and
+  changes in $M$.
+\item[2 pts] Differentiate the solution to $(I+ZZ^T) x = b$ with respect to
+  changes in $Z$ and $b$, given a QR factorization of $Z$.  Your code
+  should require $O(nk)$ time.
+\item[2 pts] Differentiate the Cholesky factorization $R^T R = M$
+  ({\em Hint}: differentiate the basic relation, then pre- and
+  post-multiply by $R^{-T}$ and $R^{-1}$, respectively).
+\end{itemize}
+Please provide {\em both} a written description of your approach and
+code that satisfies the provided interfaces.
+
+\paragraph*{3: Tridiagonal trouble}
+Let $T$ be a positive definite symmetric tridiagonal matrix
+\[
+T = \begin{bmatrix}
+  \alpha_1 & \beta_1 \\
+  \beta_1 & \alpha_2 & \beta_2 \\
+  & \beta_2 & \alpha_2 & \beta_3 \\
+  & & \ddots & \ddots & \ddots \\
+  & & & \beta_{n-2} & \alpha_{n-1} &\beta_{n-1} \\
+  & & & & \beta_{n-1} \alpha_n
+  \end{bmatrix}
+\]
+Answer the following question
+\begin{itemize}
+\item[2 pts] Consider any block 2-by-2 decomposition of $S = T^{-1}$ with
+  square diagonal blocks, and show that $S_{12}$ and $S_{21}$ are rank
+  one.
+\item[2 pts] Write a code to compute $\|T^{-1}\|_1$ efficiently and exactly
+  (i.e.~you should not use a technique like Hager's condition estimator).
+  Please provide {\em both} a written description of your approach and
+  code that satisfies the provided interfaces.
+\end{itemize}
+
+\paragraph*{4: Conditioning}
+[2 pts] For any operator norm, show that if $\|A^{-1} E\| < 1$ then
+\[
+  \kappa(A+E)
+  \leq \kappa(A) \left( \frac{1+\|A^{-1} E\|}{1-\|A^{-1}E\|} \right)
+  \leq \frac{\kappa(A)}{(1-\|A^{-1}E\|)^2}
+\]
+where $\kappa$ denotes the condition number with respect to linear solves.
+
+\end{document}
