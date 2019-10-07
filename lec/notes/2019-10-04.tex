@@ -5,6 +5,230 @@
 
 \hdr{2019-10-04}
 
+% Programmatic note
+% General inner products and least squares
+% Gauss-Markov theorem in general
+
+A programmatic note: this version of the lecture notes includes
+updates posted after the actual lecture in order to reflect what we
+actually covered (general inner products and the Gauss-Markov
+theorem).
+
+\section{General inner products}
+
+Let's start this lecture by considering the derivation of the normal
+equations in a more abstract setting.  For a general inner product
+space over $\bbR$, the least squares problem is to minimize
+\[
+  \phi(x) = \frac{1}{2} \|Ax-b\|^2 = \frac{1}{2} \langle Ax-b, Ax-b \rangle.
+\]
+Taking variations with respect to $x$, we have the normal equations
+\[
+  \delta \phi = \langle A \delta x, Ax-b \rangle = 0 \quad
+  \mbox{ for all } \delta x.
+\]
+In the standard inner product, we write this as
+$\delta x^T A^T (Ax-b) = 0$; but what if we work with something
+other than the standard inner product?
+
+For any finite-dimensional abstract inner product space, we can choose
+an orthonormal basis to make things look like $\bbR^n$ with the
+standard inner product.  However, we might prefer a basis that is
+{\em not} orthonormal.  A standard example of this is the space
+$\mathcal{P}_d$ of polynomials of degree at most $d$, with the inner
+product
+\[
+  \langle p, q \rangle_{L^2[-1,1]} = \int_{-1}^1 p(x) q(x) \, dx.
+\]
+Expressed in terms of the {\em monomial basis} $1, x, x^2, \ldots, x^d$
+(also called the {\em power basis}), we have
+\begin{align*}
+  \left\langle
+    \sum_{j=0}^d a_j x^j, \sum_{i=0}^d b_i x^i
+  \right\rangle_{L^2[-1,1]}
+  &= \int_{-1}^1 \left( \sum_{j=0}^d a_j x^j \right)
+                \left( \sum_{i=0}^d b_i x^i \right) \, dx \\
+  &= \sum_{i=0}^d \sum_{j=0}^d b_i a_j \int_{-1}^1 x^i x^j \, dx \\
+  &= b^T M a
+\end{align*}
+where the entries of $M$ (indexed from $0$ to $d$) are
+\[
+  m_{ij}
+  = \langle x^i, x^j \rangle_{L^2[-1,1]}
+  = \int_{-1}^1 x^i x^j \, dx
+  = \begin{cases}
+      2/(i+j+1), & i+j \mbox{ even} \\
+      0, & \mbox{ otherwise}.
+     \end{cases}
+\]
+More generally, for any finite dimensional inner product space
+over $\bbR$ with some basis $v_1, \ldots, v_n$, we have
+\[
+  \left\langle \sum_j a_j v_j, \sum_i b_i v_i \right\rangle =
+  b^T M a, \quad \mbox{ where }
+  m_{ij} = \langle v_i, v_j \rangle.
+\]
+By the symmetry and positive definiteness propertiess of the inner
+product, the matrix $M$ must also be symmetric and positive definite.
+
+In general, every symmetric positive definite matrix defines an inner
+product on $\bbR^{n}$, and every inner product on a finite dimensional
+space can be written in terms of an spd matrix.  For a general spd
+matrix $M$, we say the $M$ inner product is\footnote{What's the story
+  with the order of $x$ and $y$?  In the complex
+  case, we usually say the inner product is linear in the first slot
+  and conjugate-linear in the second slot.  Hence, in the complex case
+  we want $\langle x, y \rangle_M = y^* M x$.  In the real case, the
+  order does not matter: $y^T M x = x^T M y$.
+}
+\[
+  \langle x, y \rangle_M = y^T M x,
+\]
+and the associated norm is
+\[
+  \|x\|_M = \sqrt{x^T M x}.
+\]
+The standard inner product corresponds to $M = I$.  For general $M$,
+though, the normal equations are
+\[
+  \langle A \delta x, Ax-b \rangle_M = \delta x^T A^T M (Ax-b) = 0
+  \quad \mbox{ for all } \delta x.
+\]
+The generalized Moore-Penrose pseudo-inverse is therefore.
+\[
+  x = A_M^\dagger b, \quad A_M^\dagger = (A^T M A)^{-1} A^T M.
+\]
+
+If $M = R^T R$ is a Cholesky factorization, then we have
+\[
+  \left\langle \sum_j a_j v_j, \sum_i b_i v_i \right\rangle =
+  b^T M a = (Rb)^T (Ra),
+\]
+which means in particular that
+\[
+  \|x\|_M^2 = \|Rx\|^2.
+\]
+Therefore, minimizing $\|Ax-b\|_M^2$ is equivalent to minimizing
+$\|R(Ax-b)\|^2$, and we can map from the standard inner product
+version of the normal equations to the generalized version:
+\[
+  (RA)^T R(Ax-b) = A^T R^T R (Ax-b) = A^T M (Ax-b) = 0.
+\]
+
+\section{Inner products and random variables}
+
+Suppose $X$ and $Y$ are real-valued random variables.
+Then co-variance of $X$ and $Y$ is defined to be
+\[
+  \operatorname{Cov}[X, Y] = E[XY] - E[X] E[Y],
+\]
+and the covariance of $X$ is
+$\operatorname{Var}[X] = \operatorname{Cov}[X, X]$.
+In general, the covariance is a positive semi-definite
+quadratic form, and the only null vectors for the quadratic forms
+(zero-variance random variables) are constants.  The set of random
+variables with zero mean and finite variance forms a vector
+space\footnote{The ``finite variance'' restriction is automatic when we are
+  dealing with random variables on a finite set.  The restriction is
+  important when dealing with continuous random variables, or even
+  random variables on a discrete-but-infinite set.} for which the
+covariance forms an inner product and the variance can be treated as a
+squared Euclidean norm.  With this observation, an enormous amount of
+basic probability theory can be translated directly into linear
+algebra\footnote{This does not seem to be the most common way to teach
+  these concepts in probability theory, but it is certainly the way
+  that I taught them when I had the chance to teach the class.}.
+
+What about random variables that are not zero variance?  In general,
+we can define an inner product over all finite-variance real random
+variables by
+\[
+  \langle X, Y \rangle = E[XY].
+\]
+For continuous random variables that are defined on some underlying
+space with a probability density function $\mu(z)$, we have
+\[
+  \langle X, Y \rangle = \int x(z) y(z) \mu(z) \, dz,
+\]
+i.e.~the expected value inner product defines a (weighted) $L^2$
+inner product space.  The problem of finding a minimal
+mean-squared error predictor for a random variable $Y$ in terms of
+random variables $X_1, \ldots, X_n$ is exactly a least squares
+problem with respect to this $L^2$ inner product.
+
+\section{The Gauss-Markov theorem}
+
+The Gauss-Markov theorem is one of the motivations for studying least
+squares in a statistical context.  Suppose for some unknown $x$ we
+have a random vector $b$ drawn from the multivariate normal
+distribution
+\[
+  b \sim N(Ax, C).
+\]
+We seek to find the {\em best linear unbiased estimator} (BLUE) for
+$x$.  Unpacking the last three terms, we want:
+\begin{itemize}
+\item A {\em linear} estimator for $x$ in terms or the observed random
+  vector $b$.  That is, we want a statistic
+  \[
+    \hat{x} = Lb
+  \]
+  for some matrix $L$.  By a simple computation --- or consulting an
+  appropriate reference --- we note that
+  \[
+    \hat{x} \sim N(LAx, LCL^T)
+  \]
+\item We want $\hat{x}$ to be an {\em unbiased} estimator.  That means
+  \[
+    E[Lb] = LAx = x,
+  \]
+  i.e.~$L$ should be a pseudo-inverse of $A$.  
+\end{itemize}
+
+What does it mean to choose the ``beat'' linear unbiased predictor?
+In order to explain this, it is useful to first find a plausible
+candidate for the best choice.  The probability density function for $b$ is
+\[
+  p(b) = \frac{1}{\sqrt{\det(2\pi C)}} \exp\left( -\frac{1}{2}(b-Ax) C^{-1} (b-Ax) \right).
+\]
+Treating this as a likelihood, the maximum likelihood estimate for $x$
+would involve minimizing the quantity
+\[
+  \frac{1}{2} \|b-Ax\|_{C^{-1}}^2,
+\]
+i.e.~we consider $\hat{x} = A^\dagger_{C^{-1}} b$ as a candidate for
+the ``best'' solution.  $A^\dagger_{C^{-1}}$ is a pseudoinverse for
+$A$, so this is a linear unbiased estimator.  Moreover, we can write
+{\em any} linear unbiased estimator in terms of
+\[
+  L = A^{\dagger}_{C^{-1}} + F
+\]
+for some $F$ s.t.~$FA = 0$.  The covariance matrix for any such
+estimator will be
+\[
+  L C L^T =
+  A^{\dagger}_{C^{-1}} C A^{\dagger}_{C^{-1}} +
+  2 [A^{\dagger}_{C^{-1}} C F^T]^S +
+  F C F^T,
+\]
+where $[B]^S$ refers to the symmetric part of $B$ for any square
+matrix $B$.  The first and last term in this expansion are clearly
+positive definite; the middle term is the symmetric part of
+\[
+  (A^T C^{-1} A)^{-1} A^T C^{-1} C F^T = 
+  (A^T C^{-1} A)^{-1} (FA)^T = 0.
+\]
+Therefore, for any nonzero $F$, we have variance
+\[
+  L C L^T =
+  A^{\dagger}_{C^{-1}} C A^{\dagger}_{C^{-1}} + F C F^T \geq
+  A^{\dagger}_{C^{-1}} C A^{\dagger}_{C^{-1}},
+\]
+where the ordering relation $\geq$ means that the first matrix is
+greater than the second by a symmetric positive definite difference.
+The pseudoinverse $A^\dagger_{C^{-1}}$ is best in the sense that it
+results in a variance smaller than that of any other pseudoinverse.
+
 \section{QR and Gram-Schmidt}
 
 We now turn to our first numerical method for computing the
