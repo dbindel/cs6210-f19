@@ -17,7 +17,8 @@ outside the course staff.  Templates for the required codes are
 provided in the class Github repository.
 
 \paragraph*{1: Identity plus}
-Consider the matrix $A = I + ZZ^T$ where $Z \in \bbR^{n \times k}$.
+Consider the matrix $A = I + ZZ^T$ where $Z \in \bbR^{n \times k}$,
+$k \ll n$.
 \begin{itemize}
 \item[2 pts] Argue that $A$ is symmetric and positive definite.
 \item[2 pts] Give an $O(nk)$ time algorithm for computing $y = Ax$.
@@ -34,10 +35,10 @@ Give codes to compute directional derivatives for each of the
 following
 \begin{itemize}
 \item[2 pts] Differentiate $\|x\|_M^2$ with respect to changes in $x$ and
-  changes in $M$.
+  changes in $M$ (for $M$ spd).
 \item[2 pts] Differentiate the solution to $(I+ZZ^T) x = b$ with respect to
   changes in $Z$ and $b$, given a QR factorization of $Z$.  Your code
-  should require $O(nk)$ time.
+  should require $O(nk + k^3)$ time.
 \item[2 pts] Differentiate the Cholesky factorization $R^T R = M$
   ({\em Hint}: differentiate the basic relation, then pre- and
   post-multiply by $R^{-T}$ and $R^{-1}$, respectively).
