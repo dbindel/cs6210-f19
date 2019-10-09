@@ -3,7 +3,9 @@ TEXINPUTS:=.
 HW=pdf/hw1.pdf \
    pdf/hw2.pdf \
    pdf/hw3.pdf \
-   pdf/hw4.pdf 
+   pdf/hw4.pdf \
+   pdf/hw5.pdf \
+   pdf/mt.pdf 
 
 .PHONY: all copy
 all: $(HW)
