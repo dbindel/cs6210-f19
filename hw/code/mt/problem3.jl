@@ -5,7 +5,7 @@ using LinearAlgebra
 #
 function norminv(alpha, beta)
   # TODO: Replace with something efficient (can do in O(n))
-  return norm(inv(SymTridiagonal(alpha, beta)), 1)
+  return opnorm(inv(SymTridiagonal(alpha, beta)), 1)
 end
 
 
@@ -16,7 +16,7 @@ alpha = 1 .+ rand(Float64, n)
 beta = rand(Float64, n-1)
 T = SymTridiagonal(alpha, beta)
 
-normTinv_ref = norm(inv(T), 1)
+normTinv_ref = opnorm(inv(T), 1)
 normTinv = norminv(alpha, beta)
 relerr = abs(normTinv_ref-normTinv)/normTinv_ref
 
