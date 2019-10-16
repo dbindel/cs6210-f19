@@ -255,19 +255,20 @@ $x^{(-i)}$, and then evaluate $r^{(-i)} = b_i - a_i^T x^{(-i)}$.
 This involves $m$
 least squares problems, for a total cost of $O(m^2 n^2)$ (as opposed
 to the usual $O(mn^2)$ cost for an ordinary least squares problem).
-Let us find a better way!
+Let us find a better way!  For the sake of concreteness, we will focus
+on the Tikhonov-regularized version of the problem
 
 The key is to write the equations for $x^{(-i)}$ as a small change to
-the equations for $A^T A x^* = A^T b$:
+the equations for $(A^T A + \lambda^2 I) x^* = A^T b$:
 \[
-  (A^T A - a_i a_i^T) x^{(-i)} = A^T b - a_i b_i.
+  (A^T A + \lambda^2 I - a_i a_i^T) x^{(-i)} = A^T b - a_i b_i.
 \]
 This subtracts the influence of row $i$ from both sides of the normal
 equations.  By introducing the auxiliary variable $\gamma = -a_i^T x^{(-i)}$,
 we have
 \[
   \begin{bmatrix}
-    A^TA & a_i \\
+    A^TA + \lambda^2 I & a_i \\
     a_i^T & 1
   \end{bmatrix}
   \begin{bmatrix} x^{(-i)} \\ \gamma \end{bmatrix} =
@@ -277,7 +278,7 @@ Eliminating $x^{(-i)}$ gives
 \[
   (1-\ell_i^2) \gamma = \ell_i^2 b_i - a_i^T x^*
 \]
-where $\ell_i^2 = a_i^T (A^T A)^{-1} a_i$ is called the
+where $\ell_i^2 = a_i^T (A^T A + \lambda^2 I)^{-1} a_i$ is called the
 {\em leverage score} for row $i$.  Now, observe that
 if $r = b-Ax^*$ is the residual for the full problem, then
 \[
@@ -291,9 +292,13 @@ or, equivalently
   r^{(-i)} = \frac{r_i}{1-\ell_i^2}.
 \]
 We finish the job by observing that $\ell_i^2$ is the $i$th diagonal
-element of the orthogonal projector $\Pi = A(A^TA)A^{-1}$, which we
-can also write in terms of the economy QR decomposition of $A$ as
-$\Pi = QQ^T$.  Hence, $\ell_i^2$ is the squared row sum of $Q$ in
+element of the orthogonal projector $\Pi = A(A^TA + \lambda I)A^{-1}$, which we
+can also write in terms of the economy QR decomposition
+\[
+  \begin{bmatrix} A \\ \lambda I \end{bmatrix} =
+  \begin{bmatrix} Q_1 \\ Q_2 \end{bmatrix} R
+\]
+as $\Pi = Q_1 Q_1^T$.  Hence, $\ell_i^2$ is the squared row sum of $Q_1$ in
 the QR factorization.
 
 
