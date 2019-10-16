@@ -131,6 +131,7 @@
 -
   date: 2019-10-16
   info: Regularization choices; matrix nearness problems
+  notes: 2019-10-16.pdf
 -
   date: 2019-10-18
   info: Kernels and least squares
