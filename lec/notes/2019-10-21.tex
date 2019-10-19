@@ -1,0 +1,496 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-10-21}
+
+\section{Eigenvalue problems}
+
+An eigenvalue $\lambda \in \bbC$ of a matrix $A \in \bbC^{n \times n}$
+is a value for which the equations $A v = v \lambda$ and $w^* A = \lambda w^*$
+have nontrivial
+solutions (the eigenvectors $w^*$ and $v$).  Together, $(\lambda, v)$ forms an
+eigenpair and $(\lambda, v, w^*)$ forms an eigentriple.
+An eigenvector is a basis for a one-dimensional invariant
+subspace: that is, $A$ maps anything multiple of $v$ to some other
+multiple of $v$.  More generally, a matrix $V \in \bbC^{n \times m}$
+spans an invariant subspace if $AV = VL$ for some
+$L \in \bbC^{n \times m}$.
+
+Associated with any square $A$, we can write a matrix $Q$ whose
+columns form an orthonormal basis for nested invariant subspaces of
+$A$; that is, the first $k$ columns of $Q$ form a $k$-dimensional
+invariant subspace of $A$.  This structure of nested invariant
+subspaces gives us that
+\[
+  AQ = QT,
+\]
+where $T$ is an upper triangular matrix.  The factorization
+\[
+  A = QTQ^*
+\]
+is a {\em Schur factorization}.  Most of next week will be devoted to
+methods to compute Schur factorizations (or parts of Schur
+factorizations).  The Schur factorization is nearly as versatile as,
+and is far more numerically stable than, the {\em Jordan canonical form}
+\[
+  A V = V J.
+\]
+where $J$ is a block diagonal matrices with
+{\em Jordan} blocks of the form
+\[
+  J_{\lambda} =
+  \begin{bmatrix}
+    \lambda & 1  \\
+            & \ddots & \ddots \\
+            &        & \lambda & 1 \\
+            &        &         & \lambda
+  \end{bmatrix}.
+\]
+
+The {\em algebraic multiplicity} of an eigenvalue $\lambda$ is the
+number of times it appears on the diagonal of the Jordan form, or the
+number of times the factor $z-\lambda$ divides the characteristic
+polynomial $\det(A-zI)$.  The {\em geometric multiplicity} is given by
+the number of Jordan blocks associated to $\lambda$, or by the
+dimension of the null space of $(A-\lambda I)$.  In general, there is
+exactly one eigenvector of $A$ for each Jordan block, and the
+eigenvectors form a basis iff $A$ is diagonalizable -- that is, if $A$
+has only 1-by-1 Jordan blocks and all geometric and algebraic
+multiplicities match.  The diagonalizable matrices form a dense set in
+$\bbC^{n \times n}$, a fact which is often convenient in proofs (since
+an argument for the diagonalizable case together with a continuity
+argument often yields a general solution).  This fact also explains
+part of why the Jordan canonical form is annoying for numerical work:
+if every matrix is an arbitrarily small perturbation of something
+diagonalizable, then the Jordan form is discontinuous as a function of
+$A$!  Even among the diagonalizable matrices, though, the eigenvector
+decomposition is often overrated for computational purposes.  Poor
+conditioning of the eigenvector basis can make diagonalization a
+numerically unstable business, and most computations that are naively
+formulated in terms of an eigenvector basis can equally well be
+formulated in terms of Schur basis.
+
+In {\em generalized eigenvalue problems}, we ask for nontrivial
+solutions to
+\[
+  (A-\lambda B)v = 0.
+\]
+There are also {\em nonlinear eigenvalue problems}, which show up
+in my research but which we will not talk about in class.  In
+addition to these variants on the eigenvalue problem, there are
+also many different factors that affect the how we choose algorithms.
+Is the problem...
+\begin{enumerate}
+\item
+  nonsymmetric or symmetric?
+\item
+  standard or generalized?
+\item
+  to find all eigenvalues or just a few?
+\item
+  to compute eigenvectors, invariant subspaces, or just eigenvalues?
+\end{enumerate}
+For different answers to these questions, there are different ``best''
+choices of algorithm.  For the next week or two, we will focus
+specifically on the problem of computing eigenpairs, invariant
+subspaces, and Schur forms for nonsymmetric matrices.  We will only
+briefly touch on the special case of the symmetric problem, which has
+so much more mathematical structure that it is treated almost entirely
+differently from the nonsymmetric case.
+
+\subsection{The 2-by-2 case: some illustrative examples}
+
+Many of the salient features that occur in general eigenvalue
+problems can be illustrated with the 2-by-2 matrix
+\[
+  A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}.
+\]
+Finding an eigenvalue is equivalent to finding a root
+of the characteristic polynomial:
+\begin{align*}
+  p(z)
+    &= \det(A-z I) = (a-z)(d-z) - bc \\
+    &= z^2 - (a + d) z + (ad-bc).
+\end{align*}
+If the roots of the characteristic polynomial are $\lambda_1$ and
+$\lambda_2$, then we have
+\begin{align*}
+  p(z) &= (z-\lambda_1)(z-\lambda_2) \\
+       &= z^2 - (\lambda_1 + \lambda_2) z + \lambda_1 \lambda_2.
+\end{align*}
+We recognize the second coefficient in the
+characteristic polynomial as minus the trace $a + d = \lambda_1 +
+\lambda_2$.  The constant coefficient is the determinant
+$ad-bc = \lambda_1 \lambda_2$.  Both these coefficients can be
+seen as functions of the eigenvalues, but both can be computed
+efficiently without referring to the eigenvalues explicitly.
+
+Now suppose we choose some fixed $\lambda \in \bbC$ and look at the
+2-by-2 matrices for which $\lambda$ is an eigenvalue.  If we just want
+$\lambda$ to be {\em an} eigenvalue, we must satisfy one scalar
+equation: $p(\lambda) = 0$.  To find matrices for which $\lambda$ is a
+{\em double} eigenvalue, we must satisfy the additional constraint
+$a+d = 2\lambda$.  And there is only one 2-by-2 matrix for which $\lambda$ is
+a double eigenvalue with {\em geometric} multiplicity 2: $A = \lambda I$.
+Put differently, the set of 2-by-2 matrices for which $\lambda$ is an
+eigenvalue has codimension 1 (i.e. it is described by one scalar
+constraint); the set of 2-by-2 matrices for which $\lambda$ is an eigenvalue
+with algebraic multiplicity 2 has codimension 2; and the set of 2-by-2
+matrices for which $\lambda$ is an eigenvalue with geometric multiplicity
+2 has codimension 3.
+
+More generally, we can say that among general complex $n$-by-$n$ matrices,
+the existence of {\em some} multiple eigenvalue is a
+codimension 1 phenomena (somewhat rare in general); and the existence
+of an eigenvalue with {\em geometric} multiplicity greater than 1 is
+a codimension 3 phenomena (very rare in general).  Of course, things
+change if we consider structured matrices.  For example, in symmetric
+matrices the  algebraic and geometric multiplicities of all eigenvalues
+are the same.
+
+\subsection{The symmetric case}
+
+In general, a real matrix can have complex eigenvalues (though in
+conjugate pairs), and it may or may not have a basis of eigenvectors.
+In the case of real {\em symmetric} matrices ($A = A^T$), we have
+much more structure: namely,
+\begin{itemize}
+\item All the eigenvalues are real.
+\item There is a complete {\em orthonormal} basis of eigenvectors.
+\end{itemize}
+To see the former, observe that if $(v, \lambda)$ is an eigenpair
+and $\|v\| = 1$ then
+\[
+  \lambda = v^* A v = \bar{v^* A v} = \bar{\lambda},
+\]
+which implies that $\lambda$ is real.  To see that eigenvectors
+associated with different eigenvalues must be orthogonal, note
+that if $(v,\lambda)$ and $(u,\mu)$ are eigenpairs with $\lambda \neq
+\mu$, then
+\[
+v^* A u = \begin{cases}
+  (A v)^* u = \lambda v \cdot u \\
+  v^* (Au) = \mu v \cdot u
+\end{cases}
+\]
+and the only way for these to be the same is if $v \cdot u = 0$.
+Combining these two facts about the symmetric eigenvalue problem,
+we usually write the standard decomposition
+\[
+  A = Q \Lambda Q^T
+\]
+where $Q$ is an orthogonal matrix of eigenvalues
+and $\Lambda$ is the corresponding diagonal matrix of eigenvalues.
+
+We often use symmetric matrices to represent quadratic forms,
+and this is one reason why symmetric eigenvalue problems are
+so common.  If $A = Q \Lambda Q^T$, then we can define $w = Q^T v$
+to get the expression
+\[
+  v^* A v = \sum_{i=1}^n w_i^2 \lambda_i.
+\]
+If $\|v\|^2 = 1$ (implying $\|w\|^2 = 1$), then we can see $v^* A v$ is a
+weighted average of the eigenvalues of $A$.  Hence, the minimum or
+maximum of $v^* A v$ over all unit length vectors gives the largest
+and smallest of the eigenvalues of $A$; and, more generally, the
+eigenvalues are stationary points of $v^* A v$ subject to the
+constraint $\|v\|^2 = 1$.  Sometimes we prefer to work with all nonzero
+vectors rather than vectors with unit length, and hence define the
+{\em Rayleigh quotient}
+\[
+  \rho_A(v) = \frac{v^* A v}{v^* v};
+\]
+this ratio plays a central role in the theory of the symmetric eigenproblem.
+
+\section{Why eigenvalues?}
+
+I spend a lot of time thinking about eigenvalue problems.  In part,
+this is because I look for problems that can be solved via
+eigenvalues.  But I might have fewer things to keep me out of trouble
+if there weren't so many places where eigenvalue analysis is useful!
+The purpose of this lecture is to tell you about a few applications of
+eigenvalue analysis, or perhaps to remind you of some applications
+that you've seen in the past.
+
+\subsection{Nonlinear equation solving}
+
+The eigenvalues of a matrix are the roots of the characteristic
+polynomial
+\[
+  p(z) = \det(zI-A).
+\]
+One way to compute eigenvalues, then, is to form the characteristic
+polynomial and run a root-finding routine on it.  In practice, this is
+a terrible idea, if only because the root-finding problem is often far
+more sensitive than the original eigenvalue problem.  But even if
+sensitivity were not an issue, finding {\em all} the roots of a
+polynomial seems like a nontrivial undertaking.  Iterations like
+Newton's method, for example, only converge locally.  In fact, the
+{\tt roots} command in MATLAB computes the roots of a polynomial
+by finding the eigenvalues of a corresponding {\em companion matrix}
+with the polynomial coefficients on the first row, ones on the first
+subdiagonal, and zeros elsewhere:
+\[
+  C = \begin{bmatrix}
+    c_{d-1} & c_{d-2} & \ldots & c_1 & c_0 \\
+    1   & 0   & \ldots & 0 & 0 \\
+    0   & 1   & \ldots & 0 & 0 \\
+    \vdots   & \vdots    & \ddots &     \vdots & \vdots \\
+    0   & 0   & \ldots & 1 & 0
+    \end{bmatrix}.
+\]
+The characteristic polynomial for this matrix is precisely
+\[
+  \det(zI-C) = z^d + c_{d-1} z^{d-1} + \ldots + c_1 z + c_0.
+\]
+
+There are some problems that connect to polynomial root finding, and
+thus to eigenvalue problems, in surprising ways.  For example, the
+problem of finding ``optimal'' rules for computing integrals
+numerically (sometimes called Gaussian quadrature rules) boils down to
+finding the roots of orthogonal polynomials, which can in turn be
+converted into an eigenvalue problem; see, for example, ``Calculation
+of Gauss Quadrature Rules'' by Golub and Welsch ({\em Mathematics of
+Computation}, vol 23, 1969).
+
+More generally, eigenvalue problems are one of the few examples I have
+of a nonlinear equation where I can find {\em all} solutions in
+polynomial time!  Thus, if I have a hard nonlinear equation to solve,
+it is very tempting to try to massage it into an eigenvalue problem,
+or to approximate it by an eigenvalue problem.
+
+\subsection{Optimization}
+
+As we noted before, the symmetric eigenvalue problem has an
+interpretation in terms of optimization of a quadratic form over
+unit length vectors.  More generally, one can look at generalized
+eigenvalue problems in terms of optimization of a ratio of quadratic
+forms.  We now discuss some applications where this interpretation
+is useful.
+
+Recall that the matrix 2-norm is defined as
+\[
+  \|A\|_2 = \max_{x \neq 0} \frac{\|Ax\|}{\|x\|} = \max_{\|x\| = 1} \|Ax\|.
+\]
+Taking squares and using the monotonicity of the map
+$z \rightarrow z^2$ for non-negative arguments, we have
+\[
+  \|A\|_2^2 = \max_{\|x\|^2 = 1} \|Ax\|^2 = \max_{x^T x = 1} x^T A^T A x.
+\]
+The $x$ that solves this constrained optimization problem must be a
+stationary point for the augmented Lagrangian function
+\[
+  L(x,\lambda) = x^T A^T A x - \lambda (x^T x - 1),
+\]
+i.e.
+\begin{align*}
+  \nabla_x L(x,\lambda) &= 2(A^T A x - \lambda x) = 0 \\
+  \nabla_\lambda L(x,\lambda) &= x^T x - 1 = 0.
+\end{align*}
+These equations say that $x$ is an eigenvector of $A^T A$
+with eigenvalue $\lambda$.  The largest eigenvalue of $A^T A$ is
+therefore $\|A\|_2^2$.
+
+More generally, if $H$ is any Hermitian matrix, the {\em Rayleigh quotient}
+\[
+  \rho_H(v) = \frac{v^* H v}{v^* v}
+\]
+has stationary points exactly when $v$ is an eigenvector of $H$.
+Optimizing the Rayleigh quotient is therefore example of a
+{\em non-convex} global optimization problem that I know how to solve in
+polynomial time.  Such examples are rare, and so it is tempting to try
+to massage other nonconvex optimization problems so that they look
+like Rayleigh quotient optimization, too.
+
+To give an example of a nonconvex optimization that can be usefully
+approximated using Rayleigh quotients, consider the superficially
+unrelated problem of graph bisection.  Given an undirected graph $G$
+with vertices $V$ and edges $E \subset V \times V$, we want to find a
+partition of the nodes into two equal-size sets such that few edges go
+between the sets.  That is, we want to write $V$ as a disjoint union
+$V = V_1 \cup V_2$, $|V_1| = |V_2|$, such that the number of edges cut
+$|E \cap (V_1 \times V_2)|$ is minimized.  Another way to write the
+same thing is to label each node $i$ in the graph with $x_i \in \{+1,
+-1\}$, and define $V_1$ to be all the nodes with label $+1$, $V_2$ to
+be all the nodes with label $-1$.  Then the condition that the two
+sets are the same size is equivalent to
+\[
+  \sum_i x_i = 0,
+\]
+and the number of edges cut is
+\[
+  \frac{1}{4} \sum_{(i,j) \in E} (x_i-x_j)^2
+\]
+We can rewrite the constraint more concisely as $e^T x = 0$, where $e$
+is the vector of all ones; as for the number of edges cut, this is
+\[
+  \mbox{edges cut} = \frac{1}{4} x^T L x
+\]
+where the {\em graph Laplacian} $L$ has the node degrees on the
+diagonal and $-1$ in off-diagonal entry $(i,j)$ iff there is an edge
+from $i$ to $j$.
+
+Unsurprisingly, the binary quadratic programming problem
+\[
+  \mbox{minimize } x^T L x \mbox{ s.t. } e^T x = 0 \mbox{ and } x \in
+  \{ +1, -1 \}^n
+\]
+is NP-hard, and we know of no efficient algorithms that are guaranteed
+to work for this problem in general.  On the other hand, we can
+{\em relax} the problem to
+\[
+  \mbox{minimize } v^T L v \mbox{ s.t. } e^T v = 0 \mbox{ and } \|v\|^2
+  = n, v \in \bbR^n,
+\]
+and this problem is an eigenvalue problem: $v$ is the eigenvector
+associated with the smallest positive eigenvalue of $L$, and $v^T L v$
+is $n$ times the corresponding eigenvalue.  Since the constraint in
+the first problem is strictly stronger than the constraint in the
+second problem, $n \lambda_2(L)$ is in fact a lower bound on the
+smallest possible cut size, and the sign pattern of $v$ often provides
+a partition with a small cut size.  This is the heart of {\em spectral
+  partitioning} methods.
+
+\subsection{Dynamics}
+
+Eigenvalue problems come naturally out of separation of variables
+methods, and out of transform methods for the dynamics of discrete or
+continuous linear time invariant systems, including examples from
+physics and from probability theory.  They allow us to analyze
+complicated high-dimensional dynamics in terms of simpler,
+low-dimensional systems.  We consider two examples: separation of
+variables for a free vibration problem, and convergence of a
+discrete-time Markov chain.
+
+\subsubsection{Generalized eigenvalue problems and free vibrations}
+
+One of the standard methods for solving differential equations is
+{\em separation of variables}.  In this approach, we try to write
+special solutions as a product of simpler functions, and then write
+the equations that those functions have to satisfy.  As an example,
+consider a differential equation that describes the free vibrations of a
+mechanical system:
+\[
+  M \ddot{u} + K u = 0
+\]
+Here $M \in \bbR^{n \times n}$ is a symmetric positive definite {\em
+mass matrix} and $K \in \bbR^{n \times n}$ is a symmetric {\em
+stiffness matrix} (also usually positive definite, but not always).
+We look for solutions to this system of the form
+\[
+  u(t) = u_0 \cos(\omega t),
+\]
+where $u_0$ is a fixed vector.  To have a solution of this form, we
+must have
+\[
+  K u_0 - \omega^2 M u_0 = 0,
+\]
+i.e. $(\omega^2, u_0)$ is an eigenpair for a {\em generalized}
+eigenvalue problem.  In fact, the eigenvectors for this generalized
+eigenvalue problem form an $M$-orthonormal basis for $\bbR^n$, and so
+we can write {\em every} free vibration as a linear combination of
+these simple ``modal'' solutions.
+
+\subsubsection{Markov chain convergence and the spectral gap}
+
+This high-level idea of using the eigenvalue decomposition to
+understand dynamics is not limited to differential equations, nor to
+mechanical systems.  For example, a {\em discrete-time Markov chain}
+on $n$ states is a random process where the state $X_{k+1}$ is a
+random variable that depends only on the state $X_k$.  The {\em
+  transition matrix} for the Markov chain is a matrix $P$ where
+$P_{ij}$ is the (fixed) probability of transitioning to state $i$ from
+state $j$, i.e.
+\[
+  P_{ij} = P\{X_{k+1} = j | X_{k} = i\}.
+\]
+Let $\pi^{(k)} \in \bbR^n$ be the distribution vector at time $k$,
+i.e.
+\[
+  \pi^{(k)}_i = P\{X_k = i\}.
+\]
+Then we have the recurrence relationship
+\[
+  (\pi^{(k+1)})^T = (\pi^{(k)})^T P.
+\]
+In general, this means that
+\[
+  (\pi^{(k)})^T = (\pi^{(0)})^T P^k.
+\]
+Now, suppose the transition matrix $P$ is diagonalizable, i.e. $P = V
+\Lambda V^{-1}$.  Then
+\[
+  P^k = V \Lambda V^{-1} V \Lambda V^{-1} \ldots V \Lambda V^{-1}
+      = V \Lambda \ldots \Lambda V^{-1} = V \Lambda^k V^{-1},
+\]
+and so
+\[
+  (\pi^{(k)})^T = (\pi^{(0)})^T V \Lambda^k V^{-1}.
+\]
+An {\em ergodic} Markov chain has one eigenvalue at one, and all the
+other eigenvalues are less than one in modulus.  In this case, the row
+eigenvector associated with the eigenvalue at one can be normalized so
+that the coefficients are all positive and sum to 1.  This normalized
+row eigenvector $\pi^{(*)}$ represents the {\em stationary}
+distribution to which the Markov chain eventually converges.  To
+compute the rate of convergence, one looks at
+\[
+  \|(\pi^{(k)}-\pi^{(*)})^T\| =
+  \|(\pi^{(0)}-\pi^{(*)})^T (V \tilde{\Lambda}^k V^{-1})\| \leq
+  \|(\pi^{(0)}-\pi^{(*)})^T \| \, \kappa(V) \|\tilde{\Lambda}\|^k
+\]
+where $\Lambda = \operatorname{diag}(1, \lambda_2, \lambda_3,
+\ldots)$, $|\lambda_i| \geq |\lambda_{i+1}|$, and $\tilde{\Lambda} =
+\operatorname{diag}(0, \lambda_2, \lambda_3, \ldots)$.  In most
+reasonable operator norms, $|\tilde{\Lambda}|^k = |\lambda_2|^k$,
+and so a great deal of the literature on convergence of Markov chains
+focuses on $1-|\lambda_2|$, called the {\em spectral gap}.
+But note that this bound does not depend on the eigenvalues alone!
+The condition number of the eigenvector matrix also plays a role, and
+if $\kappa(V)$ is very large, then it may take a long time indeed
+before anyone sees the asymptotic behavior reflected by the spectral gap.
+
+\subsection{Deductions from eigenvalue distributions}
+
+In most of our examples so far, we have considered both the
+eigenvalues and the eigenvectors.  Now let us turn to a simple example
+where the distribution of eigenvalues can be illuminating.
+
+Let $A$ be the adjacency matrix for a graph, i.e.
+\[
+  A_{ij} = \begin{cases}
+    1, & \mbox{ if there is an edge from $i$ to $j$} \\
+    0, & \mbox{ otherwise}.
+  \end{cases}
+\]
+Then $(A^k)_{ij}$ is the number of paths of length $k$ from node $i$
+to node $j$.  In particular, $(A^k)_{ii}$ is the number of cycles of
+length $k$ that start and end at node $i$, and
+$\operatorname{trace}(A^k)$ is the total number of length $k$ cycles
+starting from any node.  Recalling that the trace of a matrix is the
+sum of the eigenvalues, and that the eigenvalues of a matrix power are
+the power of the eigenvalues, we have that
+\[
+  \mbox{\# paths of length $k$} = \sum_{i} \lambda_i(A)^k,
+\]
+where $\lambda_i(A)$ are the eigenvalues of $A$; and asymptotically,
+the number of cycles of length $k$ for very large $k$ scales like
+$\lambda_1(A)^k$, where $\lambda_1(A)$ is the largest eigenvalue of
+the matrix $A$.
+
+While the statement above deals only with eigenvalues and not with
+eigenvectors, we can actually say more if we include the eigenvector;
+namely, if the graph $A$ is irreducible (i.e. there is a path from
+every state to every other state), then the largest eigenvalue
+$\lambda_1(A)$ is a real, simple eigenvalue, and asymptotically the number
+of paths from any node $i$ to node $j$ scales like the $(i,j)$ entry
+of the rank one matrix
+\[
+  \lambda_1^k v w^T
+\]
+where $v$ and $w$ are the column and row eigenvectors of $A$
+corresponding to the eigenvalue $\lambda_1$, scaled so that $w^T v = 1$.
+
+\end{document}
