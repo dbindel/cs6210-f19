@@ -1,0 +1,32 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-10-21}{2019-10-28}
+
+You may (and should) talk about problems with each other and with me,
+providing attribution for any good ideas you might get.  Your final
+write-up should be your own.
+
+\paragraph*{1: Contrary conditioning}
+Given a scalar $C > 1$, find $A \in \bbR^{2 \times 2}$ for which the
+eigenvalues are both one but $\kappa_2(A) \geq C$.
+
+\paragraph*{2: Interesting identity}
+Suppose $X, Y \in \bbR^{n \times k}$.  Show that if $\lambda \neq 0$
+is an eigenvalue of $XY^T$ then
+\[
+\begin{bmatrix}
+  -\lambda I & X \\ Y^T & -I
+\end{bmatrix}
+\]
+is singular.  Via this formulation, show $\lambda$ is also an
+eigenvalue of $Y^T X$.
+
+\paragraph*{3: Vector variations}
+Differentiate the eigenvalue equation $Ax = \lambda x$ subject
+to a constraint $l^* x = 1$ in order to write a linear system
+for the derivative of $x$ and $\lambda$ under a small change to $A$.
+
+\end{document}
