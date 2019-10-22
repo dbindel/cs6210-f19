@@ -59,7 +59,7 @@ an alternate expression for the solution to the regularized problem:
 Thus, playing around with the regularized normal equations gives us
 two different expressions for $x_\eta$:
 \begin{align*}
-  x_\eta &= (A^T A + \eta^2 I)^{-1} b \\
+  x_\eta &= (A^T A + \eta^2 I)^{-1} b A^T \\
         &= A^T (AA^T + \eta^2 I)^{-1} b
 \end{align*}
 In the full-rank overdetermined case ($m > n$), the former expression
