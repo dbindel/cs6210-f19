@@ -1,0 +1,161 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\newcommand{\uQ}{\underline{Q}}
+\newcommand{\uR}{\underline{R}}
+
+\begin{document}
+
+\hdr{2019-10-28}
+
+\section{Orthogonal iteration revisited}
+
+Last time, we described a generalization of the power methods to
+compute invariant subspaces.  That is, starting from some initial
+subspace $\calV^{(0)}$, we defined the sequence
+\[
+  \calV^{(k+1)} = A \calV^{(k)} = A^{k+1} \calV^{(0)}.
+\]
+Under some assumptions, the spaces $\calV^{(k)}$ asymptotically converge
+to an invariant subspace of $A$.
+In order to actually implement this iteration, though, we need
+a concrete representation of each of the subspaces in terms of a basis.
+In the case of the power method, we normalized our vector at each step
+to have unit length.  The natural generalization in the case of
+subspace iteration is to normalize our bases to be orthonormal at each
+step.  If the columns of $V^{(k)}$ form an orthonormal basis for
+$\calV^{(k)}$, then the columns of $AV^{(k)}$ form an orthonormal
+basis for $\calV^{(k+1)}$; and we can compute an orthonormal basis
+$V^{(k+1)}$ for $\calV^{(k+1)}$ by an economy QR decomposition:
+\[
+  V^{(k+1)} R^{(k+1)} = A V^{(k)}.
+\]
+This {\em orthogonal iteration} gives us a sequence of orthonormal
+bases $V^{(k+1)}$ for the spaces $\calV^{(k)}$.
+
+We also mentioned in the last lecture that orthogonal iteration has
+the marvelous property that it runs subspace iteration
+{\em for a sequence of nested subspaces}.  Using MATLAB notation,
+we have that for any $l$,
+\[
+  V^{(k+1)}(:,1:l) R^{(k+1)}(1:l,1:l) = A V^{(k)}(:,1:l).
+\]
+So by running orthogonal iteration on an $m$-dimensional subspace,
+we magically {\em also} run orthogonal iteration on an $l$-dimensional
+subspaces for each $l \leq m$.  Recall that the Schur factorization
+\[
+  AU = UT
+\]
+involves an orthonormal basis $U$ such that for any $l$,
+$U(:,1:l)$ spans an $l$-dimensional invariant subspace
+(this is from the triangularity of $T$).  So we might hope that
+if we ran orthogonal iteration on {\em all} of $A$, we would
+eventually converge to the $U$ matrix in the Schur factorization.
+That is, starting from $\uQ^{(0)} = I$, we iterate
+\begin{equation} \label{orth-iter-def}
+  \uQ^{(k+1)} R^{(k+1)} = A \uQ^{(k)}
+\end{equation}
+in the hopes that the columns of $\uQ^{(k)}$, since they span
+nested bases undergoing subspace iteration, will converge
+to the unitary factor $U$.
+
+Now, consider the first two steps of this iteration:
+\begin{align*}
+  \uQ^{(1)} R^{(1)} &= A \\
+  \uQ^{(2)} R^{(2)} &= A \uQ^{(1)}
+\end{align*}
+If we multiply the second equation on the right by $R^{(1)}$,
+we have
+\begin{equation} \label{orth-iter-2}
+  \uQ^{(2)} R^{(2)} R^{(1)} = A \uQ^{(1)} R^{(1)} = A^2.
+\end{equation}
+Similarly, if we multiply $\uQ^{(3)} R^{(3)} = A \uQ^{(3)}$ by $R^{(2)} R^{(1)}$,
+we have
+\[
+  \uQ^{(3)} R^{(3)} R^{(2)} R^{(1)} = A \uQ^{(2)} R^{(2)} R^{(1)} = A^3,
+\]
+where the last equality comes from (\ref{orth-iter-2}).
+We can keep going in this fashion, and if we define the
+upper triangular matrix
+$\uR^{(k)} = R^{(k)} R^{(k-1)} \ldots R^{(1)}$, we have
+\[
+  \uQ^{(k)} \uR^{(k)} = A^k.
+\]
+That is, $\uQ^{(k)}$ is precisely the unitary factor in a QR
+decomposition of $A^k$.  This fact may be unsurprising if
+we consider that we derived this orthogonal iteration from
+the power method.
+
+\section{Orthogonal iteration to QR}
+
+The focus of orthogonal iteration is the orthogonal (or unitary)
+factor in the Schur form.  The upper triangular Schur factor
+fades into the background, which is a pity; this is, after all, where we
+learn the eigenvalues.  But through a bit of algebraic trickery, it turns
+out that we can re-invent orthogonal iteration as an iteration for
+the upper triangular factor.  The steps for this transformation are as
+follows:
+\begin{enumerate}
+\item
+  The orthogonal iteration $\uQ^{(k+1)} R^{(k)} = A \uQ^{(k)}$ is a
+  generalization of the power method.  In fact, the first column of
+  this iteration is {\em exactly} the power iteration.  In general,
+  the first $p$ columns of $\uQ^{(k)}$ are converging to an orthonormal
+  basis for a $p$-dimensional invariant subspace associated with the
+  $p$ eigenvalues of $A$ with largest modulus (assuming that there
+  aren't several eigenvalues with the same modulus to make this
+  ambiguous).
+\item
+  If all the eigenvalues have different modulus, orthogonal iteration
+  ultimately converges to the orthogonal factor in a Schur form
+  \[
+    AU = UT
+  \]
+  What about the $T$ factor?  Note that $T = U^* A U$, so a natural
+  approximation to $T$ at step $k$ would be
+  \[
+    A^{(k)} = (\uQ^{(k)})^* A \uQ^{(k)},
+  \]
+  and from the definition of the subspace iteration, we have
+  \[
+    A^{(k)} = (\uQ^{(k)})^* \uQ^{(k+1)} R^{(k)} = Q^{(k)} R^{(k)},
+  \]
+  where $Q^{(k)} \equiv (\uQ^{(k)})^* \uQ^{(k+1)}$ is unitary.
+\item
+  Note that
+  \[
+    A^{(k+1)}
+    = (\uQ^{(k+1)})^* A^{(k)} \uQ^{(k+1)}
+    = (Q^{(k)})^* A^{(k)} Q^{(k)}
+    = R^{(k)} Q^{(k)}.
+  \]
+  Thus, we can go from $A^{(k)}$ to $A^{(k+1)}$ directly without
+  the orthogonal factors from subspace iteration, simply by computing
+  \begin{align*}
+    A^{(k)} &= Q^{(k)} R^{(k)} \\
+    A^{(k+1)} &= R^{(k)} Q^{(k)}.
+  \end{align*}
+  This is the {\em QR iteration}.
+\end{enumerate}
+
+Under some restrictions on $A$, the matrices $A^{(k)}$ will ultimately
+converge to the triangular Schur factor of $A$.  But we have two problems:
+\begin{enumerate}
+\item
+  Each step of the QR iteration requires a QR factorization, which is
+  an $O(n^3)$ operation.  This is rather expensive, and even in the happy
+  case where we might be able to get each eigenvalue with a constant
+  number of steps, $O(n)$ total steps at a cost of $O(n^3)$ each gives
+  us an $O(n^4)$ algorithm.  Given that everything else we have done
+  so far costs only $O(n^3)$, an $O(n^4)$ cost for eigenvalue computation
+  seems excessive.
+\item
+  Like the power iteration upon which it is based, the basic iteration
+  converges linearly, and the rate of convergence is related to the
+  ratios of the moduli of eigenvalues.  Convergence is slow when there
+  are eigenvalues of nearly the same modulus, and nonexistent when
+  there are eigenvalues with the same modulus.
+\end{enumerate}
+We describe next how to overcome these two difficulties.
+
+\end{document}

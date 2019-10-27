@@ -163,14 +163,17 @@
 -
   date: 2019-10-28
   info: Subspace iterations and QR
+  notes: 2019-10-28.pdf
   hw:
     - info: HW 7 (due 11/04)
 -
   date: 2019-10-30
   info: Hessenberg QR
+  notes: 2019-10-30.pdf
 -
   date: 2019-11-01
   info: Practical QR
+  notes: 2019-11-01.pdf
 #
 # ==================
 # Week 11

@@ -1,0 +1,151 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\newcommand{\uQ}{\underline{Q}}
+\newcommand{\uR}{\underline{R}}
+
+\begin{document}
+
+\hdr{2019-10-30}
+
+\section{Hessenberg matrices and QR steps in $O(n^2)$}
+
+A matrix $H$ is said to be {\em upper Hessenberg} if it has
+nonzeros only in the upper triangle and the first subdiagonal.
+For example, the nonzero structure of a 5-by-5 Hessenberg matrix
+is
+\[
+  \begin{bmatrix}
+    \times & \times & \times & \times & \times \\
+    \times & \times & \times & \times & \times \\
+           & \times & \times & \times & \times \\
+           &        & \times & \times & \times \\
+           &        &        & \times & \times
+  \end{bmatrix}.
+\]
+For any square matrix $A$, we can find a unitarily similar Hessenberg
+matrix $H = Q^* A Q$ by the following algorithm:
+\lstinputlisting{code/eigen/hessred.m}
+
+A Hessenberg matrix $H$ is very nearly upper triangular, and is an
+interesting object in its own right for many applications.  For
+example, in control theory, one sometimes would like to evaluate a
+{\em transfer function}
+\[
+  h(s) = c^T (sI-A)^{-1} b + d
+\]
+for many different values of $s$.  Done naively, it looks like each
+each evaluation would require $O(n^3)$ time in order to get a
+factorization of $sI-A$; but if $H = Q^* A Q$ is upper Hessenberg, we
+can write
+\[
+  h(s) = (Qc)^* (sI-H)^{-1} (Qb) + d,
+\]
+and the Hessenberg structure of $sI-H$ allows us to do Gaussian
+elimination on it in $O(n^2)$ time.
+
+Just as it makes it cheap to do Gaussian elimination, the special
+structure of the Hessenberg matrix also makes the Householder QR
+routine very economical.  The Householder reflection computed in order
+to introduce a zero in the $(j+1,j)$ entry needs only to operate on
+rows $j$ and $j+1$.  Therefore, we have
+\[
+  Q^* H = W_{n-1} W_{n-2} \ldots W_1 H = R,
+\]
+where $W_{j}$ is a Householder reflection that operates only on rows
+$j$ and $j+1$.  Computing $R$ costs $O(n^2)$ time, since each $W_j$
+only affects two rows ($O(n)$ data).  Now, note that
+\[
+  R Q = R (W_1 W_2 \ldots W_{n-1});
+\]
+that is, $RQ$ is computed by an operation that first mixes the first
+two columns, then the second two columns, and so on.  The only subdiagonal
+entries that can be introduced in this process lie on the first subdiagonal,
+and so $RQ$ is again a Hessenberg matrix.  Therefore, one step of QR iteration
+on a Hessenberg matrix results in another Hessenberg matrix, and a Hessenberg
+QR step can be performed in $O(n^2)$ time.
+
+Putting these ideas in concrete form, we have the following code
+\lstinputlisting{code/eigen/hessqr_basic.m}
+
+\section{Inverse iteration and the QR method}
+
+When we discussed the power method, we found that we could improve
+convergence by a spectral transformation that mapped the eigenvalue we
+wanted to something with large magnitude (preferably much larger than
+the other eigenvalues).  This was the {\em shift-invert} strategy.
+We already know there is a connection leading from the power method
+to orthogonal iteration to the QR method, which we can summarize with
+a small number of formulas.  Let us see if we can follow the same
+path to uncover a connection from inverse iteration (the power method
+with $A^{-1}$, a special case of shift-invert in which the shift is zero) to QR.
+If we call the orthogonal factors
+in orthogonal iteration  $\uQ^{(k)}$ ($\uQ^{(0)} = I$) and the iterates
+in QR iteration $A^{(k)}$, we have
+\begin{align}
+  A^{k}   &= \uQ^{(k)} \uR^{(k)} \label{orth-iter-rel} \\
+  A^{(k)} &= (\uQ^{(k)})^* A (\uQ^{(k)}).
+\end{align}
+In particular, note that because $R^{(k)}$ are upper triangular,
+\[
+  A^{k} e_1 = (\uQ^{(k)} e_1) r^{(k)}_{11};
+\]
+that is, the first column of $\uQ^{(k)}$ corresponds to the $k$th
+step of power iteration starting at $e_1$.  What happens when we
+consider negative powers of $A$?  Inverting (\ref{orth-iter-rel}),
+we find
+\[
+  A^{-k} = (\uR^{(k)})^{-1} (\uQ^{(k)})^*
+\]
+The matrix $\tilde{R}^{(k)} = (\uR^{(k)})^{-1}$ is again upper triangular;
+and if we look carefully, we can see in this fact another power iteration:
+\[
+  e_n^* A^{-k} = e_n^* \tilde{R}^{(k)} (\uQ^{(k)})^*
+              = \tilde{r}^{(k)}_{nn} (\uQ^{(k)} e_n)^*.
+\]
+That is, the last column of $\uQ^{(k)}$ corresponds to a power iteration
+converging to a {\em row} eigenvector of $A^{-1}$.
+
+\section{Shifting gears}
+
+The connection from inverse iteration to orthogonal iteration (and
+thus to QR iteration) gives us a way to incorporate the shift-invert
+strategy into QR iteration: simply run QR on the matrix $A-\sigma I$,
+and the $(n,n)$ entry of the iterates (which corresponds to a Rayleigh
+quotient with an increasingly-good approximate row eigenvector) should
+start to converge to $\lambda - \sigma$, where $\lambda$ is the
+eigenvalue nearest $\sigma$.  Put differently, we can run the
+iteration:
+\begin{align*}
+  Q^{(k)} R^{(k)} &= A^{(k-1)} - \sigma I \\
+  A^{(k)} &= R^{(k)} Q^{(k)} + \sigma I.
+\end{align*}
+If we choose a good shift, then the lower right corner entry of
+$A^{(k)}$ should converge to the eigenvalue closest to $\sigma$ in
+fairly short order, and the rest of the elements in the last row
+should converge to zero.
+
+The shift-invert power iteration converges fastest when we choose a
+shift that is close to the eigenvalue that we want.  We can do even
+better if we choose a shift {\em adaptively}, which was the basis for
+running Rayleigh quotient iteration.  The same idea is the basis
+for the {\em shifted QR iteration}:
+\begin{align}
+  Q^{(k)} R^{(k)} &= A^{(k-1)} - \sigma_k I \label{sqr-1} \\
+  A^{(k)} &= R^{(k)} Q^{(k)} + \sigma_k I. \label{sqr-2}
+\end{align}
+This iteration is equivalent to computing
+\begin{align*}
+  \uQ^{(k)} \uR^{(k)} &= \prod_{j=1}^n (A-\sigma_j I) \\
+  A^{(k)} &= (\uQ^{(k)})^* A (\uQ^{(k)}) \\
+  \uQ^{(k)} &= Q^{(k)} Q^{(k-1)} \ldots Q^{(1)}.
+\end{align*}
+
+What should we use for the shift parameters $\sigma_k$?  A natural
+choice is to use $\sigma_k = e_n^* A^{(k-1)} e_n$, which is the same
+as $\sigma_k = (\uQ^{(k)} e_n)^* A (\uQ^{(k)} e_n)$, the Rayleigh quotient
+based on the last column of $\uQ^{(k)}$.  This simple shifted QR iteration
+is equivalent to running Rayleigh iteration starting from an initial vector
+of $e_n$, which we noted before is locally quadratically convergent.
+
+\end{document}
