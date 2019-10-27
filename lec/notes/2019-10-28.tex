@@ -158,4 +158,64 @@ converge to the triangular Schur factor of $A$.  But we have two problems:
 \end{enumerate}
 We describe next how to overcome these two difficulties.
 
+\section{Hessenberg matrices and QR steps in $O(n^2)$}
+
+A matrix $H$ is said to be {\em upper Hessenberg} if it has
+nonzeros only in the upper triangle and the first subdiagonal.
+For example, the nonzero structure of a 5-by-5 Hessenberg matrix
+is
+\[
+  \begin{bmatrix}
+    \times & \times & \times & \times & \times \\
+    \times & \times & \times & \times & \times \\
+           & \times & \times & \times & \times \\
+           &        & \times & \times & \times \\
+           &        &        & \times & \times
+  \end{bmatrix}.
+\]
+For any square matrix $A$, we can find a unitarily similar Hessenberg
+matrix $H = Q^* A Q$ by the following algorithm:
+\lstinputlisting{code/eigen/hessred.m}
+
+A Hessenberg matrix $H$ is very nearly upper triangular, and is an
+interesting object in its own right for many applications.  For
+example, in control theory, one sometimes would like to evaluate a
+{\em transfer function}
+\[
+  h(s) = c^T (sI-A)^{-1} b + d
+\]
+for many different values of $s$.  Done naively, it looks like each
+each evaluation would require $O(n^3)$ time in order to get a
+factorization of $sI-A$; but if $H = Q^* A Q$ is upper Hessenberg, we
+can write
+\[
+  h(s) = (Qc)^* (sI-H)^{-1} (Qb) + d,
+\]
+and the Hessenberg structure of $sI-H$ allows us to do Gaussian
+elimination on it in $O(n^2)$ time.
+
+Just as it makes it cheap to do Gaussian elimination, the special
+structure of the Hessenberg matrix also makes the Householder QR
+routine very economical.  The Householder reflection computed in order
+to introduce a zero in the $(j+1,j)$ entry needs only to operate on
+rows $j$ and $j+1$.  Therefore, we have
+\[
+  Q^* H = W_{n-1} W_{n-2} \ldots W_1 H = R,
+\]
+where $W_{j}$ is a Householder reflection that operates only on rows
+$j$ and $j+1$.  Computing $R$ costs $O(n^2)$ time, since each $W_j$
+only affects two rows ($O(n)$ data).  Now, note that
+\[
+  R Q = R (W_1 W_2 \ldots W_{n-1});
+\]
+that is, $RQ$ is computed by an operation that first mixes the first
+two columns, then the second two columns, and so on.  The only subdiagonal
+entries that can be introduced in this process lie on the first subdiagonal,
+and so $RQ$ is again a Hessenberg matrix.  Therefore, one step of QR iteration
+on a Hessenberg matrix results in another Hessenberg matrix, and a Hessenberg
+QR step can be performed in $O(n^2)$ time.
+
+Putting these ideas in concrete form, we have the following code
+\lstinputlisting{code/eigen/hessqr_basic.m}
+
 \end{document}

@@ -8,66 +8,6 @@
 
 \hdr{2019-10-30}
 
-\section{Hessenberg matrices and QR steps in $O(n^2)$}
-
-A matrix $H$ is said to be {\em upper Hessenberg} if it has
-nonzeros only in the upper triangle and the first subdiagonal.
-For example, the nonzero structure of a 5-by-5 Hessenberg matrix
-is
-\[
-  \begin{bmatrix}
-    \times & \times & \times & \times & \times \\
-    \times & \times & \times & \times & \times \\
-           & \times & \times & \times & \times \\
-           &        & \times & \times & \times \\
-           &        &        & \times & \times
-  \end{bmatrix}.
-\]
-For any square matrix $A$, we can find a unitarily similar Hessenberg
-matrix $H = Q^* A Q$ by the following algorithm:
-\lstinputlisting{code/eigen/hessred.m}
-
-A Hessenberg matrix $H$ is very nearly upper triangular, and is an
-interesting object in its own right for many applications.  For
-example, in control theory, one sometimes would like to evaluate a
-{\em transfer function}
-\[
-  h(s) = c^T (sI-A)^{-1} b + d
-\]
-for many different values of $s$.  Done naively, it looks like each
-each evaluation would require $O(n^3)$ time in order to get a
-factorization of $sI-A$; but if $H = Q^* A Q$ is upper Hessenberg, we
-can write
-\[
-  h(s) = (Qc)^* (sI-H)^{-1} (Qb) + d,
-\]
-and the Hessenberg structure of $sI-H$ allows us to do Gaussian
-elimination on it in $O(n^2)$ time.
-
-Just as it makes it cheap to do Gaussian elimination, the special
-structure of the Hessenberg matrix also makes the Householder QR
-routine very economical.  The Householder reflection computed in order
-to introduce a zero in the $(j+1,j)$ entry needs only to operate on
-rows $j$ and $j+1$.  Therefore, we have
-\[
-  Q^* H = W_{n-1} W_{n-2} \ldots W_1 H = R,
-\]
-where $W_{j}$ is a Householder reflection that operates only on rows
-$j$ and $j+1$.  Computing $R$ costs $O(n^2)$ time, since each $W_j$
-only affects two rows ($O(n)$ data).  Now, note that
-\[
-  R Q = R (W_1 W_2 \ldots W_{n-1});
-\]
-that is, $RQ$ is computed by an operation that first mixes the first
-two columns, then the second two columns, and so on.  The only subdiagonal
-entries that can be introduced in this process lie on the first subdiagonal,
-and so $RQ$ is again a Hessenberg matrix.  Therefore, one step of QR iteration
-on a Hessenberg matrix results in another Hessenberg matrix, and a Hessenberg
-QR step can be performed in $O(n^2)$ time.
-
-Putting these ideas in concrete form, we have the following code
-\lstinputlisting{code/eigen/hessqr_basic.m}
-
 \section{Inverse iteration and the QR method}
 
 When we discussed the power method, we found that we could improve
@@ -147,5 +87,190 @@ as $\sigma_k = (\uQ^{(k)} e_n)^* A (\uQ^{(k)} e_n)$, the Rayleigh quotient
 based on the last column of $\uQ^{(k)}$.  This simple shifted QR iteration
 is equivalent to running Rayleigh iteration starting from an initial vector
 of $e_n$, which we noted before is locally quadratically convergent.
+
+\section{Double trouble}
+
+The simple shift strategy we described in the previous section gives
+{\em local} quadratic convergence, but it is not {\em globally} convergent.
+%% For example, suppose $P$ is a cyclic permutation matrix, i.e.
+%% \[
+%%   P = \begin{bmatrix}
+%%         0 & 0 & \cdots & 0 & 1 \\
+%%         1 & 0 & \cdots & 0 & 0 \\
+%%         0 & 1 & \cdots & 0 & 0 \\
+%%         \vdots & \ddots & \ddots & \vdots & \vdots \\
+%%         0 & 0 & \cdots & 1 & 0
+%%      \end{bmatrix}
+%% \]
+%% The matrix $P$ is a {\em fixed point} for the shifted QR iteration
+%% (\ref{sqr-1})--(\ref{sqr-2}) when we choose
+%% $\sigma_k = e_n^* A^{(k)} e_n = 0$.
+%
+As a particularly pesky example, consider what happens if we
+want to compute a complex conjugate pair of eigenvalues of a real
+matrix.  With our simple shifting strategy, 
+%the iteration (\ref{sqr-1})--(\ref{sqr-2}) will 
+the QR iteration
+never produce a complex iterate, a
+complex shift, or a complex eigenvalue.  The best we can hope for is
+that our initial shift is closer to both eigenvalues in the conjugate
+pair than it is to anything else in the spectrum; in this case, we
+will most likely find that the last two columns of $\uQ^{(k)}$ are
+converging to a basis for an {\em invariant row subspace} of $A$,
+and the corresponding eigenvalues are the eigenvalues of the trailing
+2-by-2 sub-block.
+
+Fortunately, we know how to compute the eigenvalues of a 2-by-2
+matrix!  This suggests the following shift strategy: let $\sigma_k$ be
+one of the eigenvalues of $A^{(k)}(n-1:n,n-1:n)$.  Because this 2-by-2
+problem can have complex roots even when the matrix is real, this
+shift strategy allows the possibility that we could converge to
+complex eigenvalues. On the other hand, if our original matrix is
+real, perhaps we would like to consider the {\em real} Schur form, in
+which $U$ is a real matrix and $T$ is block diagonal with 1-by-1 and
+2-by-2 diagonal blocks that correspond, respectively, to real and
+complex eigenvalues.  If we shift with {\em both} roots of
+$A^{(k)}(n-1:n,n-1:n)$, equivalent to computing
+\begin{align*}
+  Q^{(k)} R^{(k)} &= (A^{(k-1)} - \sigma_{k+} I)(A^{(k-1)} - \sigma_{k-}) \\
+  A^{(k)} &= (Q^{(k)})^* A^{(k-1)} Q^{(k)}. \label{sqr-2}
+\end{align*}
+There is one catch here: even if we started with $A^{(0)}$ in Hessenberg
+form, it is unclear how to do this double-shift step in $O(n^2)$ time!
+
+The following fact will prove our salvation: if we $Q$ and $V$ are
+both orthogonal matrices and $Q^T A Q$ and $V^T A V$ are both
+(unreduced) Hessenberg\footnote{ An unreduced Hessenberg matrix has no
+  zeros on the first subdiagonal.  })  and the first column of $Q$ is
+the same as the first column of $V$, then all successive columns of
+$Q$ are unit scalar multiples of the corresponding columns of $V$.
+This is the {\em implicit Q theorem}.  Practically, it means that we
+can do any sort of shifted QR step we would like in the following way:
+\begin{enumerate}
+\item
+  Apply as a similarity any transformations in the QR decomposition
+  that affect the leading submatrix (1-by-1 or 2-by-2).
+\item
+  Restore the resulting matrix to Hessenberg form without further
+  transformations to the leading submatrix.
+\end{enumerate}
+In the first step, we effectively compute the first column of $Q$;
+in the second step, we effectively compute the remaining columns.
+Certainly we compute {\em some} transformation with the right leading
+column; and the implicit Q theorem tells us that any such transformation
+is basically the one we would have computed with an ordinary QR step.
+
+Last time, we discussed the Wilkinson strategy of choosing as a shift
+one of the roots of the trailing 2-by-2 submatrix of $A^{(k)}$ (the
+one closest to the final entry).  We also noted that if we want to
+convert to {\em real} Schur form, the Wilkinson shift has the distinct
+disadvantage that it might launch us into the complex plane.  The
+Francis shift strategy is to simultaneously apply a complex conjugate
+pair of shifts, essentially computing two steps together:
+\begin{align*}
+  Q^{(k)} R^{(k)} &= (A^{(k-1)}-\sigma_k I)(A^{(k-1)}-\bar{\sigma}_k I) \\
+                &= (A^{(k-1)})^2 - 2\Re(\sigma_k) A^{(k-1)} + |\sigma_k|^2 I \\
+  A^{(k)}        &= (Q^{(k)})^* A^{(k-1)} (Q^{(k)}).
+\end{align*}
+When the Wilkinson shift is real, we let $\sigma_k$ be the same as the
+Wilkinson shift; when the Wilkinson strategy leads to a conjugate pair
+of possible shifts, we use both, maintaining efficiency by doing the
+steps {\em implicitly}.  Let's now make this implicit magic a little
+more explicit by building code for an implicit double-shift QR step.
+
+Our first step will be to construct the polynomial associated with the
+Francis double-shift.  In the case where the trailing 2-by-2 submatrix
+(or 2-by-2 block Rayleigh quotient, if one prefers) has a complex pair
+of eigenvalues, we just use its characteristic polynomial.  Otherwise,
+we use the polynomial associated with two steps with a Wilkinson shift.
+
+\lstinputlisting{code/eigen/francis_poly.m}
+
+The code {\tt francis\_poly} gives us coefficients $b_k$ and $c_k$ for a
+quadratic function $s_k(z) = z^2 + b_k z + c_k$.  We now want to compute
+\begin{align*}
+  Q^{(k)} R^{(k)} &= s_k(A^{(k-1)}) = (A^{(k-1)})^2 + b_k A^{(k-1)} + c_k I \\
+  A^{(k)}        &= (Q^{(k)})^* A^{(k-1)} (Q^{(k)}).
+\end{align*}
+The trick is to realize that all the iterates $A^{(k)}$ are Hessenberg,
+and the Hessenberg form for a matrix is usually unique (up to signs).
+Therefore, we compute the first Householder transformation $W$ in a
+QR factorization of $s_k(A^{(k)}$ explicitly.  The first column of $Q^{(k)}$
+is the same as the first column of $W$.  The remaining columns of $Q^{(k)}$
+can be determined by the requirement that $A^{(k)}$ is in Hessenberg form.
+We compute them implicitly by applying the usual Hessenberg reduction algorithm
+to $B = WA^{(k-1)}W$, taking advantage of the fact that $B$ has special
+structure to do $O(n^2)$ work.  Each step of the reduction moves a ``bulge''
+down the diagonal by one.
+
+\lstinputlisting{code/eigen/hessqr_francis.m}
+
+In the LAPACK codes, the Francis double-shift strategy is mixed with
+some ``exceptional shifts'' that occur every few iterations.
+These exceptional shifts serve to keep the algorithm from getting
+stuck in certain pathological situations (e.g. a cyclic permutation
+matrix).
+
+\section{Deflation}
+
+A sequence of implicit doubly-shifted QR steps with the Francis shift
+will usually give us rapid convergence of a trailing 1-by-1 or 2-by-2
+submatrix to a block of a Schur factorization.  As this happens,
+the trailing row (or two rows) becomes very close to zero.  When the
+values in these rows are close enough to zero, we {\em deflate} by
+setting them equal to zero.  This corresponds to a small perturbation
+to the original problem.
+
+The following code converts a Hessenberg matrix to a block upper triangular
+matrix with 1-by-1 and 2-by-2 blocks.  To reduce this matrix further to
+real Schur form, we would need to make an additional pass to further
+reduce any 2-by-2 block with real eigenvalues into a pair of 1-by-1 blocks.
+
+\lstinputlisting{code/eigen/hessqr.m}
+
+More careful deflation criteria are usually used in practice;
+see the book.  This criterion at least corresponds to small normwise
+perturbations to the original problem, but it may result in less
+accurate estimates of small eigenvalues than we could obtain with
+a more aggressive criterion.
+
+\section{Stability of the method}
+
+Each step of the implicitly double-shifted QR iteration changes the
+matrix only with orthogonal transformations (which are perfectly conditioned)
+or deflations.  Hence, the QR iteration is backward stable.  However,
+this is {\em not} the same as saying that the method is forward stable!
+For forward stability, the conditioning of the eigenvalues is critical,
+and multiple (or nearly multiple) eigenvalues of multiplicity $m$
+usually inherit an $O(\epsilon^{1/m})$ error, as we saw in our earlier
+discussion of sensitivity.
+
+The intermediate computations in the QR code as given above are prone to
+scaling problems, and so the basic QR codes in LAPACK ({\tt dlahqr})
+uses a more careful construction of a scaled copy of the first Householder
+transformation.
+
+\section{The state of the art}
+
+The current state of the art in QR iterations is the LAPACK code {\tt
+  dgehqr} written by Ralph Byers, which is based on an award-winning
+set of papers by Braman, Byers, and Mathias.  This code uses the following
+general strategy:
+\begin{enumerate}
+\item
+  Run the basic QR iteration to find the eigenvalues of a trailing $b \times b$
+  submatrix.  Apply the transformations to the whole matrix, resulting in
+  a ``spike'' to the left of the triangularized portion.
+\item
+  Look for converged eigenvalues in the trailing submatrix by analyzing
+  the ``spike'' to find small elements.  Deflate any eigenvalues found
+  (and there may be several).  This is called {\em aggressive early deflation}.
+\item
+  Use several of the remaining eigenvalues from the Rayleigh quotient block
+  as a sequence of successive shifts.  These can be run simultaneously by
+  chasing a sequence of closely-spaced bulges down the main diagonal.
+  The similarity transformations associated are applied in a blocky way
+  to get good cache performance.
+\end{enumerate}
 
 \end{document}
