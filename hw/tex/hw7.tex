@@ -1,0 +1,64 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-10-28}{2019-11-04}
+
+You may (and should) talk about problems with each other and with me,
+providing attribution for any good ideas you might get.  Your final
+write-up should be your own.
+
+% PageRank?
+% Cayley transform, filters, etc
+% Gershgorin and max elements?
+% Solving something with just Hessenberg form
+% Product eigenvalue problem or similar?
+% Multiple eigenvalues?
+
+\paragraph*{1: On the border}
+Suppose the bordered matrix
+\[
+  M(\lambda) =
+  \begin{bmatrix}
+    A-s I & b \\
+    c^T & 0
+  \end{bmatrix}
+\]
+is nonsingular, and consider the linear system
+\[
+  \begin{bmatrix} A-s I & b \\ c^T & 0 \end{bmatrix}
+  \begin{bmatrix} f(s) \\ g(s) \end{bmatrix} =
+  \begin{bmatrix} 0 \\ 1 \end{bmatrix}.
+\]
+\begin{itemize}
+\item
+  Show that $g(\lambda) = 0$ iff $\lambda$ is an eigenvalue of $A$.
+\item
+  Argue that the Newton iteration
+  \[
+    \hat{\lambda}^{k+1} = \hat{\lambda}^k - g(\lambda^k)/g'(\lambda^k)
+  \]
+  is equivalent to a shift-invert iteration with an adaptive shift
+  choice; what is the shift at each step?
+\end{itemize}
+
+\paragraph*{2: Real rotations}
+Suppose $A \in \bbR^{n \times n}$ has a complex conjugate pair of
+eigenvalues $\mu \exp(\pm \i\theta) = \alpha + \beta \iu$ with maximal
+modulus ($\mu > |\lambda|$ for all other eigenvalues $\lambda$) and
+corresponding eigenvectors $u \pm v \iu$.  Show that power iteration
+from a random starting veector gives the sequence
+\[
+  v_k \approx u \cos(k\theta + \gamma) - v \sin(k\theta+\gamma)
+\]
+for large $k$.
+
+\paragraph*{3: Hessenberg re-reduction}
+Suppose $A = R + uv^T$ where $H \in \bbR^{n \times n}$ is upper
+Hessenberg and $u, v \in \bbR^n$.  Show how to reduce $A$ to upper
+Hessenberg form by orthogonal similarity in $O(n^2)$ time using a
+bottom-to-top sequence of Givens rotations.  Your code should satisfy
+the interface in the class repository.
+
+\end{document}
