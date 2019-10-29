@@ -35,12 +35,14 @@ is nonsingular, and consider the linear system
 \item
   Show that $g(\lambda) = 0$ iff $\lambda$ is an eigenvalue of $A$.
 \item
-  Argue that the Newton iteration
+  Modify the {\tt hw7newton} code (Julia or MATLAB) to implement the
+  Newton iteration
   \[
-  \hat{\lambda}_{k+1} = \hat{\lambda}_k - g(\hat{\lambda}_k)/g'(\hat{\lambda}_k)
+  \sigma_{k+1} = \sigma_k - g(\sigma_k)/g'(\sigma_k).
   \]
-  is equivalent to a shift-invert iteration with an adaptive shift
-  choice; what is the shift at each step?
+  You should see quadratic convergence in the tester, as indicated by
+  the $g(\sigma_{k+1})$ having roughly the order of magnitude
+  of $g(\sigma_k)^2$.
 \end{itemize}
 
 \paragraph*{2: Real rotations}
