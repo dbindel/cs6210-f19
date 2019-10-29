@@ -56,11 +56,10 @@ from a random starting vector gives the sequence
 \]
 for large $k$.
 
-\paragraph*{3: Hessenberg re-reduction}
-Suppose $A = H + uv^T$ where $H \in \bbR^{n \times n}$ is upper
-Hessenberg and $u, v \in \bbR^n$.  Show how to reduce $A$ to upper
-Hessenberg form by orthogonal similarity in $O(n^2)$ time using a
-bottom-to-top sequence of Givens rotations followed by a top-to-bottom
-sequence.  Your code should satisfy the interface in the class repository.
+\paragraph*{3: Shifted solver}
+Suppose $H \in \bbR^{n \times n}$ is given upper Hessenberg matrix.
+Write a QR-based solver that runs in $O(n^2)$ time to solve linear
+systems of the form $(H-\sigma I) x = b$.
+Your code should satisfy the interface in the class repository.
 
 \end{document}

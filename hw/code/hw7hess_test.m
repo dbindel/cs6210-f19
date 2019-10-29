@@ -1,13 +1,8 @@
-H0 = triu(rand(10),-1);
-u = rand(10,1);
-v = rand(10,1);
-A = H0+u*v';
+H = triu(rand(10),-1);
+b = rand(10,1);
 
-[Q, H] = hw7hess(H0, u, v);
-err1   = norm(A-Q*H*Q')/norm(A);
-err2   = norm(tril(H,-2));
-err3   = norm(Q'*Q-eye(10));
+sigma = rand(1);
+xref = (H-sigma*eye(10))\b;
+x    = hw7hess(H, sigma, b);
 
-fprintf('Check recovery of A: %e\n', err1);
-fprintf('Check Hessenberg H:  %e\n', err2);
-fprintf('Check orthogonal Q:  %e\n', err3);
+fprintf('Relerr: %e\n', norm(xref-x)/norm(xref));

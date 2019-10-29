@@ -1,6 +1,7 @@
-% Compute the Hessenberg decomposition of R+uv' in O(n^2)
+% Solve the shifted Hessenberg system (H-s*I)*x = b in O(n^2)
 %
-function [Q, H] = hw7hess(H0, u, v)
+function [x] = hw7hess(H, sigma, b)
 
   % Replace this with something more efficient!
-  [Q, H] = hess(H0 + u*v');
+  n = length(b);
+  x = (H-sigma*eye(n))\b;
