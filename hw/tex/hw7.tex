@@ -19,7 +19,7 @@ write-up should be your own.
 \paragraph*{1: On the border}
 Suppose the bordered matrix
 \[
-  M(\lambda) =
+  M(s) =
   \begin{bmatrix}
     A-s I & b \\
     c^T & 0
@@ -37,28 +37,28 @@ is nonsingular, and consider the linear system
 \item
   Argue that the Newton iteration
   \[
-    \hat{\lambda}^{k+1} = \hat{\lambda}^k - g(\lambda^k)/g'(\lambda^k)
+  \hat{\lambda}_{k+1} = \hat{\lambda}_k - g(\hat{\lambda}_k)/g'(\hat{\lambda}_k)
   \]
   is equivalent to a shift-invert iteration with an adaptive shift
   choice; what is the shift at each step?
 \end{itemize}
 
 \paragraph*{2: Real rotations}
-Suppose $A \in \bbR^{n \times n}$ has a complex conjugate pair of
-eigenvalues $\mu \exp(\pm \i\theta) = \alpha + \beta \iu$ with maximal
+Suppose $A \in \bbR^{n \times n}$ has a unique (algebraic multiplicity 1)
+complex conjugate pair of eigenvalues $\mu \exp(\pm \i\theta) = \alpha + \beta \iu$ with maximal
 modulus ($\mu > |\lambda|$ for all other eigenvalues $\lambda$) and
 corresponding eigenvectors $u \pm v \iu$.  Show that power iteration
-from a random starting veector gives the sequence
+from a random starting vector gives the sequence
 \[
   v_k \approx u \cos(k\theta + \gamma) - v \sin(k\theta+\gamma)
 \]
 for large $k$.
 
 \paragraph*{3: Hessenberg re-reduction}
-Suppose $A = R + uv^T$ where $H \in \bbR^{n \times n}$ is upper
+Suppose $A = H + uv^T$ where $H \in \bbR^{n \times n}$ is upper
 Hessenberg and $u, v \in \bbR^n$.  Show how to reduce $A$ to upper
 Hessenberg form by orthogonal similarity in $O(n^2)$ time using a
-bottom-to-top sequence of Givens rotations.  Your code should satisfy
-the interface in the class repository.
+bottom-to-top sequence of Givens rotations followed by a top-to-bottom
+sequence.  Your code should satisfy the interface in the class repository.
 
 \end{document}
