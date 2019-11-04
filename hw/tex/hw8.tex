@@ -1,0 +1,61 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-11-04}{2019-11-18}
+
+You may (and should) talk about problems with each other and with me,
+providing attribution for any good ideas you might get.  Your final
+write-up should be your own.
+
+Consider $A \in \bbR^{n \times n}, b \in \bbR^n$ with $A$ symmetric
+and $b$ not an eigenvector, and define
+\[
+  \phi(x) = \frac{1}{2} x^T A x - x^T b.
+\]
+We wish to minimize $\phi$ subject to the constraint $x^T x = 1$,
+via the Lagrangian
+\[
+  L(x,\mu) = \frac{1}{2} x^T A x - x^T b - \frac{\mu}{2} (x^T x - 1).
+\]
+\begin{enumerate}
+\item Express $x$ at a stationary point in terms
+  of $A$, $b$, and $\mu$.
+\item Argue that the condition $\|x\|^2 = 1$, given the expression
+  from the previous step, implies
+  singularity of the matrix
+  \[
+    \begin{bmatrix} (A-\mu I)^2 & b \\ b^T & 1 \end{bmatrix}
+  \]
+\item
+  Eliminating the $z$ variable in
+  \[
+    \begin{bmatrix}
+      (A-\mu I)^2 & b \\
+      b^T & 1
+    \end{bmatrix}
+    \begin{bmatrix} y \\ z \end{bmatrix} = 0,
+  \]
+  show that $\mu$ satsifies the quadratic eigenvalue problem
+  \[
+    \left[ (A^2-bb^T) - 2 \mu A + \mu^2 I \right] y = 0.
+  \]
+  Solving via {\tt polyeig} gives
+  us all possible $\mu$ in $O(n^3)$ time.
+\item
+  At the constrained minimizer, we must satisfy that
+  $v^T (A-\mu I) v$ is positive for all $v$ s.t.~$v^T x = 0$.
+  Argue that this implies $\mu < \lambda_2(A)$, where $\lambda_2(A)$
+  is the second smallest eigenvalue of $A$.
+\item
+  Following the divide-and-conquer idea and the argument
+  from the previous step, argue that $\phi$
+  has no more than three constrained minimizers.
+\item
+  Write a code to solve the problem, with the interface
+  {\tt hw6solve(A, b)} (returning the vector {\tt x}).
+  Please also write a test case to sanity check your solver!
+\end{enumerate}
+
+\end{document}
