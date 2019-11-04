@@ -182,14 +182,17 @@
 -
   date: 2019-11-04
   info: Theory for symmetric eigenproblems and SVD
+  notes: 2019-11-04.pdf
   hw:
     - info: HW 8 (due 11/18)
 -
   date: 2019-11-06
   info: Solver ideas for SEP and SVD
+  notes: 2019-11-06.pdf
 -
   date: 2019-11-08
   info: Other eigenvalue problems
+  notes: 2019-11-08.pdf
 #
 # ==================
 # Week 12

@@ -1,0 +1,188 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+
+\hdr{2019-11-04}
+
+\section{Minimax and interlacing}
+
+The Rayleigh quotient is a building block for a great deal of theory.
+One step beyond the basic characterization of eigenvalues as stationary
+points of a Rayleigh quotient, we have
+the {\em Courant-Fischer minimax theorem}:
+\begin{theorem}
+  If $\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_n$, then
+  we can characterize the eigenvalues via optimizations over
+  subspaces $\calV$:
+  \[
+    \lambda_k
+      = \max_{\dim \calV = k} \left( \min_{0 \neq v \in \calV} \rho_A(v) \right) \\
+      = \min_{\dim \calV = n-k+1} \left( \max_{0 \neq v \in \calV} \rho_A(v) \right).
+  \]
+\end{theorem}
+
+\begin{proof}
+  Write $A = U \Lambda U^*$ where $U$ is a unitary matrix of eigenvectors.
+  If $v$ is a unit vector, so is $x = U^* v$, and we have
+  \[
+    \rho_A(v) = x^* \Lambda x = \sum_{j=1}^n \lambda_j |x_j|^2,
+  \]
+  i.e. $\rho_A(v)$ is a weighted average of the eigenvalues
+  of $A$.  If $\calV$ is a $k$-dimensional subspace, then we can find
+  a unit vector $v \in \calV$ that satisfies the $k-1$ constraints
+  $(U^* v)_j = 0$ for $j = 1$ through $k-1$ (i.e. $v$ is orthogonal to
+  the invariant subspace associated with the first $k-1$
+  eigenvectors).  For this $v$, $\rho_A(v)$ is a weighted average of
+  $\lambda_k, \lambda_{k+1}, \ldots, \lambda_n$, so $\rho_A(v) \leq
+  \lambda_k$.  Therefore,
+  \[
+      \max_{\dim \calV = k} \left( \min_{0 \neq v \in \calV} \rho_A(v) \right)
+      \leq \lambda_k.
+  \]
+  Now, if $\calV$ is the range space of the first $k$ columns of $U$,
+  then for any $v \in \calV$ we have that $\rho_A(v)$ is a weighted
+  average of the first $k$ eigenvalues, which attains the minimal value
+  $\lambda_k$ when we choose $v = u_k$.
+\end{proof}
+
+One piece of the minimax theorem is that given any $k$-dimensional subspace
+$\calV$, the smallest value of the Rayleigh quotient over that
+subspace is a {\em lower} bound on $\lambda_k$ and an {\em upper} bound
+on $\lambda_{n-k+1}$.  Taking this one step further, we have the {\em Cauchy
+interlace theorem}, which relates the eigenvalues of a block Rayleigh quotient
+to the eigenvalues of the corresponding matrix.
+\begin{theorem}
+  Suppose $A$ is real symmetric (or Hermitian), and let $V$ be a
+  matrix with $m$ orthonormal columns.  Then the eigenvalues of
+  $W^* A W$ interlace the eigenvalues of $A$; that is, if $A$
+  has eigenvalues $\alpha_1 \geq \alpha_2 \geq \ldots \geq \alpha_n$
+  and $W^* A W$ has eigenvalues $\beta_j$, then
+  \[
+    \beta_j \in [\alpha_{n-m+j}, \alpha_j].
+  \]
+\end{theorem}
+
+\begin{proof}
+  Suppose $A \in \bbC^{n \times n}$ and $L \in \bbC^{m \times m}$.  The matrix
+  $W$ maps $\bbC^{m}$ to $\bbC^{n}$, so for each $k$-dimensional subspace
+  $\calV \subseteq \bbC^{m}$ there is a corresponding
+  $k$-dimensional subspace of $W\calV \subseteq \bbC^{n}$.  Thus,
+  \begin{align*}
+  \beta_j &=
+    \max_{\dim \calV = k} \left( \min_{0 \neq v \in \calV} \rho_L(v) \right)
+  = \max_{\dim \calV = k} \left( \min_{0 \neq v \in W\calV} \rho_A(v) \right)
+  \leq \alpha_k
+  \end{align*}
+  and similarly
+  \begin{align*}
+  \beta_j &=
+    \min_{\dim \calV = m-k+1} \left( \max_{0 \neq v \in \calV} \rho_L(v) \right)
+  =
+    \min_{\dim \calV = m-k+1} \left( \max_{0 \neq v \in W\calV} \rho_A(v) \right) \\
+  &=
+    \min_{\dim \calV = n-(k+(n-m))+1} \left( \max_{0 \neq v \in W\calV} \rho_A(v) \right)
+   \geq \alpha_{n-m+k}
+  \end{align*}
+\end{proof}
+
+Another application of the minimax theorem is due to Weyl:
+if we write $\lambda_k(A)$ for the $k$th largest eigenvalue of
+a symmetric $A$, then for any symmetric $A$ and $E$,
+\[
+  |\lambda_k(A+E)-\lambda_k(A)| \leq \|E\|_2.
+\]
+A related theorem is the Wielandt-Hoffman theorem:
+\[
+  \sum_{i=1}^n (\lambda_i(A+E)-\lambda_i(A))^2 \leq \|E\|_F^2.
+\]
+Both these theorems provide strong information about the spectrum
+relative to what we have in the nonsymmetric case (e.g. from
+Bauer-Fike).  Not only do we know that each eigenvalue of $A+E$ is
+close to {\em some} eigenvalue of $A$, but we know that we can put the
+eigenvalues of $A$ and $A+E$ into one-to-one correspondence.  So for
+the eigenvalues in the symmetric case, small backward error implies
+small forward error!
+
+As an aside, note that if $\hat{v}$ is an approximate eigenvector and
+$\hat{\lambda} = \rho_A(\hat{v})$ for a symmetric $A$, then we can
+find an explicit form for a backward error $E$ such that
+\[
+  (A+E)\hat{v} = \hat{v}\hat{\lambda}.
+\]
+by evaluate the residual $r = Av-v\lambda$ and writing $E = rv^* + vr^*$.
+So in the symmetric case, a small residual implies that we are near an
+eigenvalue.  On the other hand, it says little about the corresponding
+eigenvector, which may still be very sensitive to perturbations if
+it is associated with an eigenvalue that is close to other eigenvalues.
+
+\section{Sensitivity of invariant subspaces}
+
+The eigenvalues of a symmetric matrix are perfectly conditioned.  What
+of the eigenvectors (or, more generally, the invariant subspaces)?
+Here the picture is more complex, and involves {\em spectral gaps}.
+Suppose $u$ is an eigenvector of $A$ associated with eigenvalue $\mu$,
+and the nearest other eigenvalue is at least $\gamma$ apart.  Then
+there is a perturbation $E$ with $\|E\|_2 = \gamma/2$ for which the
+eigenvalue at $\mu$ and the nearest eigenvalue coalesce.
+
+A more refined picture is given by Davis and Kahan and covered in many
+textbooks since (I recommend those of Parlett and of Stewart).  Let
+$AU = U\Lambda$ and $\hat{A} \hat{U} = \hat{U} \hat{\Lambda}$,
+and define $R = \|\hat{A} U-U \Lambda\|$.  Then
+\[
+  \|\sin \Theta(U,\hat(U))\|_F \leq \frac{\|R\|_F}{\delta}
+\]
+where $\delta$ is the gap between the eigenvalues in $\Lambda$
+and the rest of the spectrum.  If we enforce a gap between an interval
+containing the eigenvalues in $\Lambda$ and the rest of the spectrum,
+we can change all the Frobenius norms into 2-norms (or any other
+unitarily invariant norm).  The matrix $\sin \Theta(U,\hat{U})$ is
+the matrix of sines of the {\em canonical angles} between $U$ and $\hat{U}$;
+if both bases are normalized, the cosines of these canonical angles are
+the singular values of $U^* \hat{U}$.
+
+The punchline for this is that an eigenvector or invariant subspace
+for eigenvalues separated by a large spectral gap from everything
+else in the specturm is nicely stable.  But if the spectral gap is small,
+the vectors may spin like crazy under perturbations.
+
+\section{Sylvester's inertia theorem}
+
+The inertia $\nu(A)$ is a triple consisting of the number of positive,
+negative, and zero eigenvalues of $A$.  {\em Sylvester's inertia
+  theorem} says that inertia is preserved under nonsingular {\em
+  congruence} transformations, i.e. transformations of the form
+\[
+  M = V^* A V
+\]
+where $V$ is nonsingular (but not necessarily unitary).
+
+Congruence transformations are significant because they are the natural
+transformations for {\em quadratic forms} defined by symmetric matrices;
+and the invariance of inertia under congruence says something about the
+invariance of the shape of a quadratic form under a change of basis.
+For example, if $A$ is a positive (negative) definite matrix, then the
+quadratic form
+\[
+  \phi(x) = x^* A x
+\]
+defines a concave (convex) bowl; and $\phi(Vx) = x^* (V^* A V) x$ has
+the same shape.
+
+As with almost anything else related to the symmetric eigenvalue
+problem, the minimax characterization is the key to proving
+Sylvester's inertia theorem.  The key observation is that if
+$M = V^* A V$ and $A$ has $k$ positive eigenvalues, then the minimax theorem
+gives us a $k$-dimensional subspace $\calW_+$ on which $A$ is positive
+definite (i.e. if $W$ is a basis, then $z^* (W^* A W) z > 0$ for any
+nonzero $z$).  The matrix $M$ also has a $k$-dimensional space on
+which it is positive definite, namely $V^{-1} \calW$.  Similarly, $M$
+and $A$ both have $(n-k)$-dimensional spaces on which they are
+negative semidefinite.  So the number of positive eigenvalues of $M$
+is $k$, just as the number of positive eigenvalues of $A$ is $k$.
+
+\end{document}

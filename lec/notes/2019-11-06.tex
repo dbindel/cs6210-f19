@@ -1,0 +1,180 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-11-06}
+
+\section{Algorithms}
+
+There are several flavors of symmetric eigenvalue solvers for which
+there is no equivalent (stable) nonsymmetric solver.  We discuss four
+algorithmic ideas: the workhorse QR algorithm that we have already
+seen, the Jacobi iteration, divide-and-conquer, and bisection with
+inverse iteration.
+
+The details of these algorithms are quite technical (particularly
+the divide-and-conquer method and bisection with inverse iteration).
+But even if you are not planning to focus in numerical linear algebra,
+you should know a little about the shape of these algorithms.  Why?
+Three reasons:
+\begin{itemize}
+\item Intellectual fun!
+\item To make an informed choice of algorithms.
+\item To re-use building blocks.
+\end{itemize}
+
+\section{Symmetric QR}
+
+\subsection{The eigenvalues of symmetric $A$}
+
+Like the nonsymmetric QR iteration, the symmetric QR iteration involves
+an initial reduction, but to a {\em tridiagonal} form.  This is really
+the same as the Hessenberg reduction step; but a symmetric Hessenberg
+matrix is tridiagonal, and we can use that.  Similarly, when we perform
+bulge-chasing, the intermediate matrices remain symmetric, and so we
+never have a matrix that is more than a few elements away from
+tridiagonal.  For the symmetric case, there is a little difference in
+how we choose shifts: Wilkinson shifts are fine since there are only
+real eigenvalues -- no need for the Francis double-shift strategy. But
+otherwise, the main difference is that each step of the tridiagonal QR
+iteration maps between representations with $O(n)$ parameters in $O(n)$
+time.  Each eigenvalue converges in roughly a constant number of
+iterations, so the cost to compute all eigenvalues of a tridiagonal is
+$O(n^2)$.  Compared to the $O(n^3)$ cost of reducing to tridiagonal form
+in the first place, the cost of solving for the eigenvalues of the
+tridiagonal is thus quit modest.
+
+If we want all the eigenvalues of a sparse matrix, and only want the
+eigenvalues, the algorithm is basically the fastest option. But if we
+want eigenvectors as well, then the QR iteration is more expensive,
+costing an additional $O(n^3)$; other methods run faster.
+
+\subsection{QR iteration for singular values}
+
+Now consider the case of computing the singular values of a matrix $A$.
+We could compute the singular values directly from the eigenvalues of
+the Gram matrix $A^T A$ (or $AA^T$, or the Golub-Kahan matrix).  But
+the backward error associated with tridiagonal reduction is proportional
+to the norm of the matrix $A^T A$ (or the square norm of $A$) and this
+can look quite big compared to the square of the smallest singular values.
+So rather than work with $A^T A$ {\em explicitly}, we prefer to manipulate
+$A$ in order to run the same algorithm {\em implicitly}.
+
+The first step of the QR iteration for the singular value problem is
+thus {\em bidiagonalization}; that is, we compute
+\[
+  A = \hat{U} B \hat{V}^T
+\]
+where $B$ is an upper bidiagonal matrix.  Note that
+\[
+  A^T A = \hat{V} B^T B \hat{V}^T = \hat{V} T \hat{V}^T,
+\]
+i.e.~$B$ is the Cholesky factor of the tridiagonal matrix $A$ that
+we would obtain by tridiagonalization of the Gram matrix $A^T A$.
+But we can compute $B$ directly by alternately applying
+transformations to $A$ from the left and the right.
+
+After the bidiagonal reduction, we want to do implicit QR steps.
+As a shift, we use the square root of the trailing
+corner element of the tridiagonal $B^T B$; in terms of $B$, this is
+just the norm of the last column:
+\[
+  \sigma = \sqrt{b_{n-1,n}^2 + b_{n,n}^2}.
+\]
+With this shift in hand, we could apply the first step of shifted
+QR and complete the process implicitly via bulge chasing in the same
+way we did for the nonsymmetric case.  In practice, there is an alternate
+algorithm (the {\em dqds} method) that enjoys extra stability benefits,
+allowing us to compute the singular values of $B$ to high relative
+accuracy.\footnote{%
+Of course, we usually lose high relative accuracy of the small singular
+values through the initial reduction to
+bidiagonal --- the backward error for that reduction is only small
+relative to the norm of $A$.}
+
+\section{Jacobi iteration}
+
+A {\em Jacobi rotation} is a symmetric transformation that
+diagonalizes a $2 \times 2$ (sub)matrix:
+\[
+  J^T A J = \Lambda
+\]
+In terms of scalars, this means solving
+\[
+  \begin{bmatrix} c & -s \\ s & c \end{bmatrix}
+  \begin{bmatrix} \alpha & \beta \\ \beta & \gamma \end{bmatrix}
+  \begin{bmatrix} c & s \\ -s & c \end{bmatrix} =
+  \begin{bmatrix} \lambda_1 & 0 \\ 0 & \lambda_2 \end{bmatrix},
+\]
+where $c = \cos(\theta)$ and $s = \sin(\theta)$.  A numerically
+stable method for carrying out this computation is described in
+Golub and Van Loan\footnote{Or on Wikipedia!}; we will leave
+the details aside for the purposes of these notes.
+
+Given an algorithm for computing Jacobi rotations, the idea
+of the Jacobi iteration is to incrementally apply Jacobi rotations
+to each $2 \times 2$ principle minors of $A$ in turn.  The code is
+remarkably simple:
+
+\lstinputlisting{code/eigen/jacobi_sweep.m}
+
+Each time we apply a Jacobi iteration to rows and columns $k$ and $l$,
+we reduce the sum of squares off the main diagonal by $a_{kl}^2$. The
+iteration converges quadratically, and typically we can stop after 5--10
+sweeps.  Each sweep costs $O(n^3)$, and has cost comparable to the cost
+of a tridiagonalization step before running QR iteration.  Hence, Jacobi
+iteration is rather slow.  On the other hand, it tends to compute the
+small eigenvalues of $A$ much more accurate than competing methods that
+start with a tridiagonalization step.
+
+\section{Bisection with inverse iteration}
+
+Our final algorithm for the tridiagonal eigenvalue problem\footnote{%
+As with QR and divide-conquer, the bisection iteration is typically
+preceded by a tridiagonal reduction.
+} is based on {\em Sylvester's inertia theorem},
+which says that congruent matrices have the same inertia.
+In particular, that means that if we perform the symmetric
+factorization
+\[
+  T - \sigma I = L D L^T,
+\]
+the number of positive, negative, and zero diagonal entries of $D$
+is the same as the number of eigenvalues of $A$ that are respectively
+greater than, less than, and equal to $\sigma$.  The {\em bisection
+algorithm} recursively partitions an initial interval containing all
+eigenvalues of $T$ into smaller intervals that either
+\begin{itemize}
+\item Contain no eigenvalues of $A$;
+\item Contain exactly one eigenvalue of $A$; or
+\item Are smaller in length than some tolerance.
+\end{itemize}
+The center point of each interval containing exactly one eigenvalue is
+a reasonable estimate for that eigenvalue, good enough to guarantee
+convergence of a shift-invert iteration.  And this is the bisection
+algorithm in a nutshell.
+
+The main technical difficulty with the bisection algorithm lies not
+in the bisection step (which is remarkably well-behaved even though
+it involves an unpivoted factorization of an indefinite matrix),
+but in the computation of the eigenvectors.  As with the divide-and-conquer
+scheme, bisection with inverse iteration tends to yield eigenvector
+estimates which individually have small residuals, but which may not be
+adequately orthogonal for vectors that correspond to eigenvalues in a
+cluster.  One could use explicit re-orthogonalization, but the modern
+``Grail'' code (the RRR routines in LAPACK nomenclature) manages
+stability in a much more subtle and clever way.
+This was the thesis work of Inderjit Dhillon before he turned his
+energies to machine learning and data mining; more recently, the SVD
+case was the prize-winning thesis work of Paul Willems.  The fact that
+the algorithm merits multiple highly-regarded PhD theses should tell
+you something of the subtleties in getting it right.
+
+The Grail code is so-called because it has optimal complexity for
+computing eigenvectors (given the eigenvalues); to obtain $k$ eigenvectors
+requires only $O(kn)$ time.  This is generally the fastest way to
+compute a specified subset of eigenvectors, and is often the fastest
+way to compute all eigenvectors.
+
+\end{document}
