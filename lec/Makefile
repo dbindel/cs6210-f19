@@ -30,7 +30,9 @@ LEC= \
 	pdf/2019-11-01.pdf \
 	pdf/2019-11-04.pdf \
 	pdf/2019-11-06.pdf \
-	pdf/2019-11-08.pdf 
+	pdf/2019-11-08.pdf \
+	pdf/2019-11-13.pdf \
+	pdf/2019-11-15.pdf 
 
 .PHONY: all copy
 all: $(LEC)
