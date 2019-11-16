@@ -1,0 +1,106 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-11-22}
+
+\section{Chebyshev polynomials}
+
+Suppose now that $A$ is symmetric positive definite, and we seek to
+minimize $\|q(A) b\| \leq \|q(\Lambda)\| \|b\|$.  Controlling $q(z)$
+on all the eigenvalues is a pain, but it turns out to be simple to
+instead bound $q(z)$ over some interval $[\alpha_1, \alpha_n]$
+The polynomial we want is the {\em scaled and shifted Chebyshev polynomial}
+\[
+  q_m(z) =
+  \frac{T_m\left( (z-\bar{\alpha})/\rho \right)}
+       {T_m\left( -\bar{\alpha}/\rho \right)}
+\]
+where $\bar{\alpha} = (\alpha_n + \alpha_1)/2$ and
+$\rho = (\alpha_n-\alpha_1)/2$.
+
+The Chebyshev polynomials $T_m$ are defined by the recurrence
+\begin{align*}
+  T_0(x) &= 1 \\
+  T_1(x) &= x \\
+  T_{m+1}(x) &= 2x T_m(x) - T_{m-1}(x), \quad m \geq 1.
+\end{align*}
+The Chebyshev polynomials have a number of remarkable properties, but
+perhaps the most relevant in this setting is that
+\[
+  T_m(x) =
+  \begin{cases}
+    \cos(m \cos^{-1}(x)), & |x| \leq 1, \\
+    \cosh(m \cosh^{-1}(x)), &|x| \geq 1
+  \end{cases}.
+\]
+Thus, $T_m(x)$ oscillates between $\pm 1$ on the interval $[-1,1]$,
+and then grows very quickly outside that interval.  In particular,
+\[
+  T_{m}(1 + \epsilon) \geq \frac{1}{2} (1+m\sqrt{2\epsilon}).
+\]
+Thus, we have that on $[\alpha_, \alpha_n]$,
+$|q_m| \leq \frac{2}{1+m\sqrt{2\epsilon}}$
+where
+\[
+  \epsilon = \bar{\alpha}/\rho-1
+  = \frac{2\alpha_1}{\alpha_n-\alpha_1}
+  = 2 \left( \kappa(A)-1 \right)^{-1},
+\]
+and hence
+\begin{align*}
+  |q_m(z)|
+  &\leq \frac{2}{1+2m/\sqrt{\kappa(A)-1}} \\
+  &= 2\left( 1- \frac{2m}{\sqrt{\kappa(A)-1}}\right) + O\left(\frac{m^2}{\kappa(A-1)}\right).
+\end{align*}
+Hence, we expect to reduce the optimal residual in this case
+by at least about $2/\sqrt{\kappa(A)-1}$ at each step.
+
+\section{Chebyshev: Uses and Limitations}
+
+We previously sketched out an approach for analyzing the convergence of
+methods based on Krylov subspaces:
+\begin{enumerate}
+\item
+  Characterize the Krylov subspace of interest in terms of polynomials,
+  i.e. $\mathcal{K}_k(A,b) = \{ p(A)b : p \in \mathcal{P}_{k-1} \}$.
+\item
+  For $\hat{x} = p(A) b$, write an associated error (or residual)
+  in terms of a related polynomial in $A$.
+\item
+  Phrase the problem of minimizing the error, residual, etc.~in terms
+  of minimizing a polynomial $q(z)$ on the spectrum of $A$
+  (call this $\Lambda(A)$).  The polynomial $q$ must generally satisfy
+  some side constraints that prevent the zero polynomial from being
+  a valid solution.
+\item
+  Let $\Lambda(A) \subset \Omega$, and write
+  \[
+    \max_{\lambda \in \Lambda(A)} |q(\lambda)| \leq
+    \max_{z \in Omega} |q(z)|.
+  \]
+  The set $\Omega$ should be simpler to work with than the set of
+  eigenvalues.  The simplest case is when $A$ is symmetric positive
+  definite and $\Omega = [\lambda_1, \lambda_n]$.
+\item
+  The optimization problem can usually be phrased in terms of special
+  polynomial families.  The simplest case, when $\Omega$ is just an
+  interval, usually leads to an analysis via Chebyshev polynomials.
+\end{enumerate}
+The analysis sketched above is the basis for the convergence analysis
+of the Chebyshev semi-iteration, the conjugate gradient method, and
+(with various twists) several other Krylov subspace methods.
+
+The advantage of this type of analysis is that it leads to convergence
+bounds in terms of some relatively simple property of the matrix, such
+as the condition number.  The disadvantage is that the approximation of
+the spectral set $\Lambda(A)$ by a bounding region $\Omega$ can lead to
+rather pessimistic bounds.  In practice, the extent to which we are able
+to find good solutions in a Krylov subspace often depends on the
+``clumpiness'' of the eigenvalues.  Unfortunately, this ``clumpiness''
+is rather difficult to reason about a priori!  Thus, the right way to evaluate
+the convergence of Krylov methods in practice is usually to try them out,
+plot the convergence curves, and see what happens.
+
+\end{document}

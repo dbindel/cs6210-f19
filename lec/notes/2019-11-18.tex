@@ -1,0 +1,145 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-11-18}
+
+\section{General relaxations}
+
+So far, we have mostly discussed stationary methods in we think of
+sweeping through all the variables in some fixed order and
+updating a variable or block of variables at a time.  There is nothing
+that say that the order must be {\em fixed}, though, if we are willing
+to forgo the analytical framework of splittings.  There are essentially
+two reasons that we might think to do this:
+\begin{enumerate}
+\item
+  We decide which variable(s) to update next based on some adaptive
+  policy, such as which equations have the largest residual.  This
+  leads to the {\em Gauss-Southwell} method.  Various methods for fast
+  (sublinear time) personalized PageRank use this strategy.
+\item
+  We update variable(s) on multiple processors, communicating the
+  changes opportunistically.  In this case, there may be no real rhyme
+  or reason to the order in which we see updates.  These methods are
+  called {\em chaotic relaxation} or {\em asynchronous relaxation}
+  approaches, and they have seen a great deal of renewed interest over
+  the past several years for both classical scientific computing problems
+  (e.g.~PDE solvers) and for machine learning applications.
+\end{enumerate}
+
+\section{Alternating Direction Implicit}
+
+The {\em alternating direction implicit} approach to the model problem
+began life as an operator-splitting approach to solving a time-domain
+diffusion problem.  At each step of an ordinary implicit time stepper
+for the heat equation, one would solve a system of the form
+\[
+  (I+\Delta t T) x = b,
+\]
+where $\Delta t$ is small and $T$ is the 2D Laplacian operator.  But
+note that if $T = T_x + T_y$, then
+\[
+  (I+\Delta t/2 T_x)(I+ \Delta t/2 T_y) = (I+\Delta t T + O(\Delta t)^2);
+\]
+hence, we commit only a small amount of error if instead of solving one
+system with $T$ we solve two half-step systems involving $T_x$ and $T_y$,
+respectively, where $T_x$ and $T_y$ are the discretizations of the
+derivative operator in the $x$ and $y$ directions.  This is known as the
+{\em alternating direction} method.  The implementation is relatively
+straightforward:
+\lstinputlisting{code/iter/sweep_adi.m}
+
+In practice, cycling between several different versions of the shift parameter
+(interpreted above as a time-step) can lead to very rapid convergence of
+the ADI iteration.  This beautiful classical result, which has deep
+connections to the Zolotarev problem from approximation theory, has taken
+on renewed usefulness in modern control theory and model reduction,
+where recent work has connected ADI-type methods for Sylvester equations
+to various rational Krylov methods.
+
+The ADI method and its relations have also garnered many citations over
+the past 5--10 years because of their role as prior art for various
+optimization methods, such as the ADMM method.
+
+\section{Approximation from a subspace}
+
+Our workhorse methods for solving large-scale systems involve two
+key ideas: {\em relaxation} to produce a sequence of ever-better
+approximations to a problem, and {\em approximation from a subspace}
+assumed to contain a good estimate to the solution (e.g.~the subspace
+spanned by iterates of some relaxation method).  Having dealt with the
+former, we now deal with the latter.
+
+Suppose we wish to estimate the solution to a linear system $Ax^{(*)} = b$ by
+an approximate solution $\hat{x} \in \calV$, where $\calV$ is some
+approximation subspace.  How should we choose $\hat{x}$?  There are
+three standard answers:
+\begin{itemize}
+\item {\em Least squares}: Minimize $\|A\hat{x}-b\|_M^2$ for some $M$.
+\item {\em Optimization}: If $A$ is SPD, minimize $\phi(x) = \frac{1}{2} x^T A x - x^T b$ over $\calV$.
+\item {\em Galerkin}: Choose $A\hat{x}-b \perp \calW$ for some test space $\calW$.  In {\em Bubnov-Galerkin}, $\calW = \calV$; otherwise we have
+a {\em Petrov-Galerkin} method.
+\end{itemize}
+These three methods are the standard approaches used in all the methods
+we will consider.  Of course, they are not the only possibilities.
+For example, we might choose $\hat{x}$ to minimize the residual in
+some non-Euclidean norm, or we might more generally choose $\hat{x}$
+by optimizing some non-quadratic loss function.  But these approaches lead
+to optimization problems that cannot be immediately solved by linear
+algebra methods.
+
+The three approaches are closely connected in many ways:
+\begin{itemize}
+\item
+  Suppose $\hat{x}$ is the least squares solution.  Then the normal
+  equations give that $A\hat{x}-b \perp M A\calV$; this is a
+  (Petrov-)Galerkin condition.
+\item
+  Similarly, suppose $\hat{x}$ minimizes $\phi(x)$ over the space
+  $\calV$.  Then for any $\delta x \in \calV$ we must have
+  \[
+    \delta \phi = \delta x^T (Ax-b) = 0,
+  \]
+  i.e.~$Ax-b \perp \calV$.  This is a (Bubnov-)Galerkin condition.
+\item
+  If $x$ is the least squares solution, then by definition
+  we minimize
+  \[
+    \frac{1}{2} \|Ax-b\|_M^2 = \frac{1}{2} x^T A^T M A x - x^T A^T M b + \frac{1}{2} b^T M b,
+  \]
+  i.e.~we have the optimization objective for the normal equation
+  SPD system $A^T M A x - A^T M b = 0$, plus a constant.
+\item
+  Note that if $A$ is SPD, then we can express $\phi$ with respect to
+  the $A^{-1}$ norm as
+  \[
+    \phi(x) = \frac{1}{2} \|Ax-b\|_{A^{-1}}^2 - \frac{1}{2} b^T A^{-1} b,
+  \]
+  so choosing $\hat{x}$ by minimizing $\phi(x)$ is equivalent to
+  minimizing the $A^{-1}$ norm of the residual.
+\item
+  Alternately, write $\phi(x)$ as
+  \[
+    \phi(x) = \frac{1}{2} \|x-A^{-1} b\|_A^2 - \frac{1}{2} b^T A^{-1} b,
+  \]
+  and so choosing $\hat{x}$ by minimizing $\phi(x)$ is also
+  equivalent to minimizing the $A$ norm of the error.
+\end{itemize}
+When deriving methods, it is frequently convenient to turn to one or
+the other of these characterizations.  But for computation and analysis,
+we will generally turn to the Galerkin formalism.
+
+In order for any of these methods to produce accurate results, we need
+two properties to hold:
+\begin{itemize}
+\item {\em Consistency}: Does the space contain a good approximation to $x$?
+\item {\em Stability}: Will our scheme find something close to the best
+  approximation possible from the space?
+\end{itemize}
+We leave the consistency and the choice of subspaces to later; for now,
+we deal with the problem of method stability.
+
+
+\end{document}
