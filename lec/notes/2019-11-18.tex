@@ -141,5 +141,75 @@ two properties to hold:
 We leave the consistency and the choice of subspaces to later; for now,
 we deal with the problem of method stability.
 
+\section{Quasi-optimality}
+
+We quantify the stability of a subspace approximation method via
+a {\em quasi-optimality bound}:
+\[
+  \|x^*-\hat{x}\| \leq C \min_{v \in \calV} \|x^*-v\|.
+\]
+That is, the approximation $\hat{x}$ is quasi-optimal if it has
+error within some factor $C$ of the best error possible within the
+space.
+
+To derive quasi-optimality results, it is useful to think of all
+of our methods as defining a {\em solution projector}
+that maps $x^*$ to the approximate solution to $A\hat{x} = Ax^* = b$.
+From the (Petrov-)Galerkin perspective, if $W \in \bbR^{n \times k}$
+and $V \in \bbR^{n \times k}$ are bases for the trial space $\calW$
+and $\calV$, respectively, then we have
+\begin{align*}
+  W^T A V \hat{y} &= W^T b, \quad \hat{x} = V \hat{y} \\
+  \hat{x} &= V (W^T A V)^{-1} W^T b \\
+          &= V (W^T A V)^{-1} W^T A x^*. \\
+          &= \Pi x^*.
+\end{align*}
+The {\em error projector} $I-\Pi$ maps $x^*$ to the error $\hat{x}-x^*$
+in approximately solving $A\hat{x} \approx Ax^* = b$.  There is no
+error iff $x^*$ is actually in $\calV$; that is, $\calV$ is the
+null space of $I-\Pi$.  Hence, if $\tilde{x}$ is any vector in $\calV$,
+then
+\[
+  \hat{e} = (I-\Pi) x = (I-\Pi) (x-\tilde{x}) = (I-\Pi) \tilde{e}.
+\]
+Therefore we have
+\[
+  \|x-\hat{x}\| \leq \|I-\Pi\| \min_{\tilde{x} \in \calV} \|x-\tilde{x}\|,
+\]
+and a bound on $\|I-\Pi\|$ gives a quasi-optimality result.
+
+For any operator norm, we have
+\[
+  |I-\Pi\| \leq 1+\|\Pi\| \leq 1 + \|V\| \|(W^T A V)^{-1}\| \|W^T A\|;
+\]
+and in any Euclidean norm, if $V$ and $W$ are chosen to have orthonormal
+columns, then
+\[
+  \|I-\Pi\| \leq 1 + \|(W^T A V)^{-1}\| \|A\|.
+\]
+If $A$ is symmetric and positive definite and $V = W$, then the
+interlace theorem gives $\|(V^T A V)^{-1}\| \leq \|A^{-1}\|$,
+and the quasi-optimality constant is bounded by $1 + \kappa(A)$.
+In more general settings, though, we may have no guarantee that
+the projected matrix $W^T A V$ is far from singular, even if $A$
+itself is nonsingular.  To guarantee boundedness of $(W^T A V)^{-1}$
+{\em a priori} requires a compatibility condition relating
+$\calW$, $\calV$, and $A$; such a condition is sometimes called
+the {\em LBB} condition
+(for Ladyzhenskaya-Babu\v{s}ka-Brezzi) or
+the {\em inf-sup} condition, so named because (as we have discussed
+previously)
+\[
+  \sigma_{\min}(W^T A V) =
+  \inf_{w \in \calW} \sup_{v \in \calV} \frac{w^T A v}{\|w\| \|v\|}.
+\]
+The LBB condition plays an important role when Galerkin methods are
+used to solve large-scale PDE problems, since there it is easy to
+choose the spaces $\calV$ and $\calW$ in a way that leads to very
+bad conditioning.  But for iterative solvers of the type we discuss
+in this course (Krylov subspace solvers), such pathologies are a more
+rare occurrence.  In this setting, we may prefer to
+monitor $\|(W^T A V)^{-1}\|$ directly as we go along, and to simply
+increase the dimension of the space if we ever run into trouble.
 
 \end{document}
