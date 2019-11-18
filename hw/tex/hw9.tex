@@ -1,0 +1,47 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\hdr{2019-11-18}{2019-11-25}
+
+You may (and should) talk about problems with each other and with me,
+providing attribution for any good ideas you might get.  Your final
+write-up should be your own.
+
+% Look at convergence of Gauss-Seidel and comment (smoothing)
+% Do a subspace solve and comment (coarse solve)
+% Combined iteration and comment
+
+For this assignment, we will consider the one-dimensional model
+system on $[0,1]$ with a grid of $n = 100$ interior points.
+The interior points have coordinates $x_j = jh$ for $h = 1/(n+1)$.
+You should complete the code framework in the class repository
+as outlined below (Julia or MATLAB/Octave) and comment on what
+you see.
+
+\paragraph*{1: Gauss-Seidel sweeps}
+Implement a simple block Gauss-Seidel sweep in the {\tt solve\_bgs}
+function.  What do you observe about the plots of the discrete sine
+transform of the error?
+
+\paragraph*{2: Bubnov-Galerkin}
+Implement a simple Bubnov-Galerkin approximation to the correction
+equation
+\[
+  T (\Delta u) = h^2 f - T \hat{u}
+\]
+in the function {\tt solve\_coarse}.  The tester uses a space of
+polynomials (represented in the Chebyshev basis for stability);
+how does the error vary depending on the polynomial degree?
+Also compute the optimal error in the space and the quasi-optimality
+constant.  How tight is the standard quasi-optimality bound in
+this case?
+
+\paragraph*{3: Two-grid iteration}
+The final loop in the tester alternates between Galerkin projections
+with a polynomial space and Gauss-Seidel sweeps.  Discuss why
+the combined iteration works better than either approach alone.
+
+
+\end{document}
