@@ -234,7 +234,8 @@
 #
 -
   date: 2019-11-25
-  info: Lanczos, Arnoldi, and connections
+  info: Conjugate gradients
+  notes: 2019-11-25.pdf
 -
   date: 2019-11-27
   break: Thanksgiving break
@@ -247,12 +248,12 @@
 #
 -
   date: 2019-12-02
-  info: Conjugate gradients
+  info: Other Krylov subspace methods
   hw:
     - info: HW 10 (due 12/9)
 -
   date: 2019-12-04
-  info: Other Krylov subspace methods
+  info: Krylov subspace methods for eigenproblems
 -
   date: 2019-12-06
   info: Krylov subspace methods for eigenproblems
