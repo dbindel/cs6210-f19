@@ -47,7 +47,7 @@ end
 function solve_bgs(T, uh, hf, bs)
   n = length(uh)-2;
   for j = 2:bs:n+1
-    # TODO: Update variables from j:min(j+bs-1.n+1)
+    # TODO: Update variables from j:min(j+bs-1,n+1)
   end
   return uh
 end
@@ -111,7 +111,7 @@ function tester()
 
   # TODO: Compute the optimal approximation in the space (uopt)
   #       and the quasi-optimality constant Cproj
-  uopt = uh
+  uopt = copy(uh)
   Cproj = 1
   
   err = norm(uref-uh)

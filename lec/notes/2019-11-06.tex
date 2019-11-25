@@ -1,5 +1,6 @@
 \documentclass[12pt, leqno]{article} %% use to set typesize
 \include{common}
+\newcommand{\calK}{\mathcal{K}}
 
 \begin{document}
 
@@ -127,6 +128,88 @@ of a tridiagonalization step before running QR iteration.  Hence, Jacobi
 iteration is rather slow.  On the other hand, it tends to compute the
 small eigenvalues of $A$ much more accurate than competing methods that
 start with a tridiagonalization step.
+
+\subsection{Divide and conquer}
+
+The symmetric QR iteration and the Jacobi iteration are methods that
+an appropriately motivated student could reasonably code\footnote{%
+I do not really recommend this, but it is not implausible.}
+The divide and conquer method, on the other hand, is much more
+numerically subtle.  Nonetheless, the ideas are quite interesting,
+and it is worth spending a moment describing the strategy at a
+high level.
+
+Like the symmetric QR iteration, the divide-and-conquer method is
+preceded by a tridiagonalization process.  After tridiagonalization,
+we think of the tridiagonal matrix as a block $2 \times 2$ matrix
+\[
+  T =
+  \begin{bmatrix}
+    T_{11} & \beta e_{k} e_1^T \\
+    \beta e_1 e_{k}^T & T_{22}
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \tilde{T}_{11} & 0 \\ 0 & \tilde{T}_{22}
+  \end{bmatrix} +
+  \beta
+  \begin{bmatrix} e_k \\ e_1 \end{bmatrix}
+  \begin{bmatrix} e_k \\ e_1 \end{bmatrix}^T.
+\]
+where $T_{11}$ and $T_{22}$ are tridiagonal submatrices of the original
+tridiagonal, and $\tilde{T}_{11}$ and $\tilde{T}_{22}$ are these
+submatrices with $\beta$ subtracted from a corner entry.  We compute
+the eigendecompositions $Q_{11}^T \tilde{T}_{11} Q_{11} = D_1$ and
+similarly for $\tilde{T}_{22}$ by applying the divide-and-conquer
+method recursively.  We then have
+\[
+  Q^T T Q = D + \beta uu^T
+\]
+where $Q$ is a block diagonal orthogonal matrix with diagonal blocks
+$Q_{11}$ and $Q_{22}$, and $u$ consists of the last row of $Q_{11}$
+and the first row of $Q_{22}$ stacked atop each other.
+
+Assuming we can perform this reduction, we now need to find
+solutions to
+\[
+  \det(D + \beta uu^T - \lambda I) = 0.
+\]
+Without loss of generality, consider the case where $u$ has no zero
+elements\footnote{%
+If there is a zero element in $u$, we have a converged eigenvalue on
+the diagonal, and can deflate it away}; then none of the diagonal
+entries of $D$ are eigenvalues of $A$, but we can write the eigenvalues
+of $A$ as solutions to
+\[
+  f(\lambda) = \det(D + \beta uu^T - \lambda I) / \det(D - \lambda I)
+  = 1 + \beta u^T (D-\lambda I)^{-1} u,
+\]
+where we have used the identity (a good homework problem)
+\[
+  \det(I+XY^T) = \det(I+Y^T X).
+\]
+The equation $f(\lambda) = 0$ is known as a {\em secular equation},
+and it is a particularly nice type of rational function.  The values
+$d_i$ are poles of $f$, and there is one solution to $f(\lambda) = 0$
+between each pair of poles, as well as one that is either smaller
+than $\min d_i$ or greater than $\max d_i$.
+
+We can compute solutions to the secular equation very efficiently using
+a variant of Newton's method.  Naively, this iteration would seem to
+require $O(n)$ time per step in order to evaluate $f$ and its derivatives
+at any given point.  However, the evaluation time can be reduced
+significantly using the {\em fast multipole method}, so that the overall
+time is close to $O(1)$ per step; as a consequence, finding all the
+solutions to one secular equation takes $O(n)$ time.
+
+The difficulty in the divide-and-conquer algorithm lies primarily in
+obtaining accurate eigenvector estimates.  The problem occurs when
+eigenvalues cluster together; in this case, one tends to compute
+eigenvector estimates which look good on their own, but which are not
+orthogonal to each other.  Fixing this problem while retaining good
+performance was a technical tour de force, and we will not even attempt
+to do it full justice here.  We suffice it to say that the divide-and-conquer
+algorithm is quite fast if we want all eigenvalues and eigenvectors,
+{\em particularly} if the eigenvectors are clustered.
 
 \section{Bisection with inverse iteration}
 
