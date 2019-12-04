@@ -248,15 +248,18 @@
 #
 -
   date: 2019-12-02
-  info: Other Krylov subspace methods
+  break: Snow day
   hw:
     - info: HW 10 (due 12/9)
+      file: hw10.pdf
 -
   date: 2019-12-04
-  info: Krylov subspace methods for eigenproblems
+  info: Other Krylov subspace methods
+  notes: 2019-12-04.pdf
 -
   date: 2019-12-06
   info: Krylov subspace methods for eigenproblems
+  notes: 2019-12-06.pdf
 #
 # ==================
 # Week 15
