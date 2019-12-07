@@ -1,0 +1,113 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+\newcommand{\calK}{\mathcal{K}}
+
+\begin{document}
+
+\hdr{2019-12-09}
+
+\section{Big ticket items}
+
+\subsection{Linear algebra and calculus}
+
+\begin{itemize}
+\item Linear algebra background (abstract and concrete)
+  \begin{itemize}
+  \item Vectors, spaces, subspaces, bases
+  \item Interpreting matrices: operators, mappings, quadratic forms
+  \item Canonical forms
+  \end{itemize}
+\item Calculus with matrices
+  \begin{itemize}
+  \item Sensitivity analysis and conditioning
+  \item Variational notation for derivatives
+  \item Optimization with quadratics
+  \item Lagrange multipliers and constraints
+  \end{itemize}
+\end{itemize}
+
+\subsection{Matrix algebra}
+
+\begin{itemize}
+\item Ways to write matrix-matrix products
+\item Blocked matrices and blocked algorithms
+\item Graph structures: sparse, diagonal, triangular, Hessenberg, etc
+\item LA structures: symmetric, skew, orthogonal, etc
+\item Other structure: Toeplitz, Hankel, other special matrices
+\end{itemize}
+
+\subsection{The big problems}
+
+\begin{align*}
+  Ax &= b \\
+  \mbox{minimize } \|Ax&-b\|^2 \\
+  Ax &= x \lambda
+\end{align*}
+
+\subsection{The big factorizations}
+
+\begin{itemize}
+\item LU and company ($LDL^T$ and Cholesky)
+\item QR (economy and full)
+\item SVD (economy and full)
+\item Schur factorization
+\item Symmetric eigendecomposition
+\end{itemize}
+
+\subsection{Iterations}
+
+\begin{itemize}
+\item Iterative refinement
+\item Stationary iterations (Jacobi, Gauss-Seidel, etc)
+\item Krylov subspace definition
+\item Approximation from a subspace and Galerkin
+\item Characterization of CG and GMRES
+\end{itemize}
+
+\subsection{Philosophical odds and ends}
+
+\begin{itemize}
+\item Identifying the right structure matters a lot
+\item We need {\em both} algebra and analysis
+\item When you don't know what else to do... eigenvalues or SVD
+\item I differentiate five expressions before breakfast!
+\end{itemize}
+
+\section{What else?}
+
+There is a lot that I wish I could get to in a course like this.
+If it were a two semester course, perhaps I would!  Three things
+come immediately to mind.
+
+\begin{itemize}
+\item LA for data science (c.f.~CS 6241)
+  \begin{itemize}
+  \item Non-negative matrix factorizations
+  \item Tensors and tensor factorizations
+  \item More on factorization-based methods in stats/ML
+  \item The linear algebra of multivariate normals
+  \item Connections to convex optimization: active sets, quadratic programming, etc
+  \end{itemize}
+\item Iterative methods (c.f.~CS 6220)
+  \begin{itemize}
+  \item More on multigrid and domain decomposition
+  \item More on other ``data-sparse'' matrices
+  \item More on elliptic PDEs, integral equations, etc
+  \end{itemize}
+\item Eigensolvers
+  \begin{itemize}
+  \item More on eigensolvers (especially iterative ones)
+  \item Much more on perturbation theory and sensitivity analysis
+  \item Matrix functions, and complex analysis connections
+  \item Connections to control theory
+  \item More on orthogonal polynomials
+  \end{itemize}
+\end{itemize}
+
+But there is always more to learn.  If the course gave you a starting
+point to thinking about other corners of linear algebra that you care
+about for your research, then it was a success.
+
+I enjoyed the class this semester.  I hope you did as well.
+
+\end{document}
