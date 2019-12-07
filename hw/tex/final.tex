@@ -1,0 +1,79 @@
+\documentclass[12pt, leqno]{article} %% use to set typesize
+\include{common}
+
+\begin{document}
+
+\pagestyle{fancy}
+\lhead{Bindel, Fall 2019}
+\rhead{Matrix Computation}
+\fancyfoot{}
+\begin{center}
+  {\large{\bf Final}} \\ (due: 2019-12-18)
+\end{center}
+
+You may (and should) use any references you wish: books, notes,
+\matlab\ help, literature.  But please do not consult with anyone
+outside the course staff.  Templates for the required codes are
+provided in the class Github repository.
+
+% Least squares with regularization, constraints
+% Eigenvalue problems
+% Symmetric eigenproblems
+% Iterative methods
+
+\paragraph*{1: Stationary steps}
+Consider the iteration
+\[
+  x^{(k+1)} = x^{(k)} + M^{-1} A^T (b-Ax^{(k)}) 
+\]
+where $M$ is positive definite and $A \in \bbR^{m \times n}$ with $m
+\geq n$ is full rank.
+\begin{itemize}
+\item[2 pts] What is the fixed point of the iteration?
+\item[2 pts] What is the matrix for the error iteration?
+\end{itemize}
+
+\paragraph*{2: Eigenbounds}
+Let $A \in \bbR^{n \times n}$ be symmetric and
+$E \in \bbR^{n \times n}$ be arbitrary, but with $\|E\|_2 \leq
+\epsilon$.
+\begin{itemize}
+\item[2 pts] Argue that $(A-sI) + E$ must be nonsingular if
+  $|s-\lambda| > \epsilon$ for every eigenvalue $\lambda$ of $A$.
+\item[2 pts] Argue that the eigenvalues of $A+E$ must lie in a union
+  of disks of radius $\epsilon$ about the eigenvalues of $A$.
+\item[2 pts] Argue that if all the eigenvalues of $A$ are at least $2
+  \epsilon$ apart, then all the eigenvalues of $A+E$ must be real.
+\end{itemize}
+
+\paragraph*{3: Eigenvector estimation}
+Let the columns of $V \in \bbR^{n \times k}$ be an orthonormal basis
+for a $k$-dimensional subspace $\mathcal{V} \subset \bbR^n$.
+Suppose $A \in \bbR^{n \times n}$ has an approximate eigenvalue $\mu
+\in \bbR$ (given)
+\begin{itemize}
+\item[2 pts] Write an efficient code to find a unit-length vector
+  $v \in \mathcal{V}$ such that $\|(A-\mu I)v\|$ is minimal.
+\item[2 pts] Give a backward error bound for the $v$ computed in
+  the previous part (i.e.~give a bound on the norm of an $E$ such that
+  $(A+E) v = \mu v$).
+\end{itemize}
+
+\paragraph*{4: Concatenated constraints}
+Consider the problem
+\[
+  \mbox{minimize } x^T A x \mbox{ s.t. } x^T M x = 1 \mbox{ and } Cx = b
+\]
+where $A, M \in \bbR^{n \times n}$ are symmetric, $M$ is positive definite, and $C \in
+\bbR^{m \times n}$ with $m < n$.
+\begin{itemize}
+\item[2 pts] Find $\bar{x}$ that minimizes $x^T M x$ subject to $Cx = b$.
+\item[2 pts] Show how to compute a basis $V$ for the subspace that is
+  $M$-orthogonal to the columns of $C^T$ (this can be a MATLAB or
+  Julia fragment).
+\item[2 pts] Argue that $x = \bar{x} + Vy$ for some $y$,
+  and show that $y$ can be computed via a generalized eigenvalue problem.
+\end{itemize}
+
+
+\end{document}

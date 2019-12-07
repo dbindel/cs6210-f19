@@ -260,6 +260,9 @@
   date: 2019-12-06
   info: Krylov subspace methods for eigenproblems
   notes: 2019-12-06.pdf
+  hw:
+   - info: Final (due 12/18)
+     file: final.pdf
 #
 # ==================
 # Week 15
